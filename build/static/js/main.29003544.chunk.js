@@ -1,0 +1,2 @@
+(this["webpackJsonpvscode-wardley-maps"]=this["webpackJsonpvscode-wardley-maps"]||[]).push([[0],{10:function(e,t,c){"use strict";c.r(t);var n=c(1),s=c(0),r=c.n(s),a=c(3),o=c(4),d=Object(o.hot)((function(e){return Object(n.jsx)(r.a.Fragment,{children:Object(n.jsx)("span",{children:"hey"})})}));Object(a.render)(Object(n.jsx)(d,{}),document.getElementById("root"))}},[[10,1,2]]]);
+//# sourceMappingURL=main.29003544.chunk.js.map
