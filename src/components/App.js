@@ -1,9 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react';
 import { hot } from 'react-hot-loader/root';
-import MapView from './map/MapView';
-import Converter from '../conversion/Converter';
-import * as MapStyles from '../constants/mapstyles';
-import * as Defaults from '../constants/defaults';
+import {MapView, MapStyles, Defaults} from 'wmlandscape';
+import {Converter} from 'wmlandscape';
 
 
 const App = props => {
