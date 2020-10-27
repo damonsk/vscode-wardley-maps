@@ -43,8 +43,11 @@ class ViewLoader {
       }
 
       postMessage = function(message){
-        console.log(message);
         this._panel.webview.postMessage({ command: 'text', val: message });
+      }
+
+      setActiveEditor = function(editor){
+        this._editor = editor;
       }
 
       getNonce = function() {

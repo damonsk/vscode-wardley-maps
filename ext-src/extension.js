@@ -25,14 +25,24 @@ function activate(context) {
         })
     );
 	
-
-	let disposable = vscode.commands.registerCommand('vscode-wardley-maps.helloWorld', function () {
+	context.subscriptions.push(vscode.commands.registerCommand('vscode-wardley-maps.helloWorld', function () {
 		const editor = vscode.window.activeTextEditor;
-		panel = new ViewLoader(context, editor);
-		vscode.window.showInformationMessage('Hello World from vscode-wardley-maps!');
-	});
+		if(editor !== undefined){
+			console.log("vscode-wardley-maps.helloWorld" + editor.document.fileName);
+			panel = new ViewLoader(context, editor);
+			panel.postMessage(editor.document.getText());
+			panel.setActiveEditor(editor);
+		}
+	}));
 
-	context.subscriptions.push(disposable);
+	context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(function (editor) {
+		if(editor !== undefined){
+			console.log("onDidChangeActiveTextEditor" + editor.document.fileName);
+			panel.postMessage(editor.document.getText());
+			panel.setActiveEditor(editor);
+		}
+    }));
+
 }
 exports.activate = activate;
 

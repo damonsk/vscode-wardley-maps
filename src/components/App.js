@@ -26,7 +26,7 @@ const App = props => {
 	);
 
 	const [mapDimensions, setMapDimensions] = useState({width: 500,
-		height: 200});
+		height: 500});
 	const [mapEvolutionStates, setMapEvolutionStates] = useState(
 		Defaults.EvolutionStages
 	);
