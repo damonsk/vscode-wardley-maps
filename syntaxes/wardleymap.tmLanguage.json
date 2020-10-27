@@ -81,7 +81,7 @@
 						"name": "constant.numeric.skinparam.keyword.source.wardleymap"
 					  },
 					  "6": {
-						"name": "punctuation.paren.clode"
+						"name": "punctuation.paren.close"
 					  },
 					  "7": {
 						"name": "punctuation.paren.close"
@@ -109,6 +109,105 @@
 							"name": "entity.name.function"
 						}
 					}
+				},
+				{
+					"match": "(pioneers|settlers|townplanners)(\\s*\\[)(\\d+(?:\\.\\d{1,})*)(\\,\\s*)(\\d+(?:\\.\\d{1,})*)(\\,\\s*)(\\d+(?:\\.\\d{1,})*)(\\,\\s*)(\\d+(?:\\.\\d{1,}))(\\])",
+					"captures": {
+						"1": {
+							"name": "storage.type"
+						},
+						"2": {
+							"name": "punctuation.paren.open"
+						},
+						"3": {
+							"name": "constant.numeric.skinparam.keyword.source.wardleymap"
+						},
+						"4": {
+							"name": "punctuation.paren.open"
+						},
+						"5": {
+							"name": "constant.numeric.skinparam.keyword.source.wardleymap"
+						},
+						"6": {
+							"name": "punctuation.paren.open"
+						},
+						"7": {
+							"name": "constant.numeric.skinparam.keyword.source.wardleymap"
+						},
+						"8": {
+							"name": "punctuation.paren.open"
+						},
+						"9": {
+							"name": "constant.numeric.skinparam.keyword.source.wardleymap"
+						},
+						"10": {
+							"name": "punctuation.paren.open"
+						}
+					}
+				},
+				{
+					"match": "(url)(\\s*[a-zA-Z0-9\\s*]+)(\\s*\\[)(\\s*[-+'\"/;:.#a-zA-Z0-9\\s*]+)(\\])",
+					"captures": {
+						"1": {
+							"name": "storage.type"
+						},
+						"2": {
+							"name": "entity.name.function"
+						},
+						"3": {
+							"name": "punctuation.paren.open"
+						},
+						"4": {
+							"name": "comment"
+						},
+						"5": {
+							"name": "punctuation.paren.open"
+						}
+					}
+				},
+				{
+					"match": "(url)(\\s*\\()(\\s*[-+'\"/;:a-zA-Z0-9\\s*]+)(\\))",
+					"captures": {
+						"1": {
+							"name": "storage.type"
+						},
+						"2": {
+							"name": "punctuation.paren.open"
+						},
+						"3": {
+							"name": "entity.name.function"
+						},
+						"4": {
+							"name": "punctuation.paren.open"
+						}
+					}
+				},
+				{
+					"match": "(\\s*\\()([-+(build|buy|outsource|market)\\s*]+)(\\))",
+					"captures": {
+						"1": {
+							"name": "punctuation.paren.open"
+						},
+						"2": {
+							"name": "storage.type"
+						},
+						"3": {
+							"name": "punctuation.paren.open"
+						}
+					}
+				},
+				{
+					"match": "(\\/\\/.*$)",
+					"captures": {
+						"1": {
+							"name": "comment"
+						}
+					}
+				},
+				{
+					"begin": "\\/\\*",
+					"end": "\\*\\/",
+					"name": "comment"
 				}
 		]
 		},
