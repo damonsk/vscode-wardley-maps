@@ -1,8 +1,10 @@
 {
   "name": "vscode-wardley-maps",
-  "displayName": "vscode-wardley-maps",
-  "description": "Generate Wardley Maps",
+  "displayName": "Wardley Maps",
+  "description": "Display and edit Wardley Maps",
+  "icon": "images/icon.png",
   "version": "0.0.1",
+  "publisher": "damonsk",
   "engines": {
     "vscode": "^1.50.0"
   },
@@ -24,7 +26,7 @@
     "languages": [{
         "id": "wardleymap",
         "aliases": ["WardleyMap", "wardleymap"],
-        "extensions": [".wm"],
+        "extensions": [".owm", ".wm"],
         "configuration": "./language-configuration.json"
     }],
     "grammars": [{
