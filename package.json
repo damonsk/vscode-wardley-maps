@@ -21,18 +21,17 @@
         "category": "Wardley Maps"
       }
     ],
-    "languages": [
-      {
-        "id": "wm",
-        "aliases": [
-          "WardleyMap",
-          "dc"
-        ],
-        "extensions": [
-          ".wm"
-        ]
-      }
-    ]
+    "languages": [{
+        "id": "wardleymap",
+        "aliases": ["WardleyMap", "wardleymap"],
+        "extensions": [".wm"],
+        "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+        "language": "wardleymap",
+        "scopeName": "source.wardleymap",
+        "path": "./syntaxes/wardleymap.tmLanguage.json"
+    }]
   },
   "scripts": {
     "vscode:prepublish": "yarn run compile",
