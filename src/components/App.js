@@ -25,7 +25,8 @@ const App = props => {
 		[]
 	);
 
-	const [mapDimensions, setMapDimensions] = useState(Defaults.MapDimensions);
+	const [mapDimensions, setMapDimensions] = useState({width: 500,
+		height: 200});
 	const [mapEvolutionStates, setMapEvolutionStates] = useState(
 		Defaults.EvolutionStages
 	);
@@ -39,20 +40,55 @@ const App = props => {
 	const mapRef = useRef(null);
 	const [mainViewHeight, setMainViewHeight] = useState(100);
 
-    const mutateMapText = newText => {
+    const mutateMapTextIn = newText => {
 		setMapText(newText);
-    };
+		console.log('mutateMapTextIn');
+	};
+
+	const mutateMapText = newText => {
+		setMapText(newText);
+		console.log('mutateMapText');
+		window.postMessage({ command: 'updateText', val: newText });
+	};
 
     const getHeight = () => {
 		var winHeight = window.innerHeight;
-		var topNavHeight = document.getElementById('top-nav-wrapper').clientHeight;
-		var titleHeight = document.getElementById('title').clientHeight;
-		return winHeight - topNavHeight - titleHeight - 85;
+		return winHeight - 200;
 	};
 	const getWidth = function() {
 		return document.getElementById('map').clientWidth - 50;
 	};
 
+	function debounce(fn, ms) {
+		let timer;
+		return () => {
+			clearTimeout(timer);
+			timer = setTimeout(() => {
+				timer = null;
+				fn.apply(this, arguments);
+			}, ms);
+		};
+	}
+
+	React.useEffect(() => {
+		const debouncedHandleResize = debounce(() => {
+			setMapDimensions({ width: getWidth(), height: getHeight() });
+			setMainViewHeight(105 + getHeight());
+		}, 1000);
+
+		const initialLoad = () => {
+			setMapDimensions({ width: getWidth(), height: getHeight() });
+			setMainViewHeight(105 + getHeight());
+		};
+
+		window.addEventListener('resize', debouncedHandleResize);
+		window.addEventListener('load', initialLoad);
+
+		return function cleanup() {
+			window.removeEventListener('resize', debouncedHandleResize);
+			window.removeEventListener('load', initialLoad);
+		};
+	});
     
     React.useEffect(() => {
 		try {
@@ -91,13 +127,13 @@ const App = props => {
             switch (message.command) {
                 case 'text':
                     console.log("message", message);
-                    mutateMapText(message.val);
+                    mutateMapTextIn(message.val);
                     break;
             }
         }
         window.addEventListener('message', (e) => textChangeBinding(e));
         return () => window.removeEventListener('message', (e) => textChangeBinding(e));
-    }, [mutateMapText]);
+    }, [mutateMapTextIn]);
 
     React.useEffect(() => {
 		switch (mapStyle) {

@@ -24,9 +24,11 @@ function activate(context) {
 			}
         })
     );
+	
 
 	let disposable = vscode.commands.registerCommand('vscode-wardley-maps.helloWorld', function () {
-		panel = new ViewLoader(context.extensionPath);
+		const editor = vscode.window.activeTextEditor;
+		panel = new ViewLoader(context, editor);
 		vscode.window.showInformationMessage('Hello World from vscode-wardley-maps!');
 	});
 

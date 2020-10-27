@@ -2,12 +2,13 @@ const vscode = require('vscode');
 const path = require('path');
 
 class ViewLoader {
-    constructor(extensionPath) {
-        this._extensionPath = extensionPath;
+    constructor(context, editor) {
+        this._extensionPath = context.extensionPath;
+        this._editor = editor;
         this._panel = vscode.window.createWebviewPanel(
           "mapView",
           "Map View",
-          vscode.ViewColumn.One,
+          vscode.ViewColumn.Two,
           {
             enableScripts: true,
             localResourceRoots: [
@@ -17,6 +18,28 @@ class ViewLoader {
         );
     
         this._panel.webview.html = this.getWebviewContent();
+        // Handle messages from the webview
+        this._panel.webview.onDidReceiveMessage(
+          message => {
+            switch (message.command) {
+              case 'updateText':
+                const textEditor = this._editor;
+                var firstLine = textEditor.document.lineAt(0);
+                var lastLine = textEditor.document.lineAt(textEditor.document.lineCount - 1);
+                var textRange = new vscode.Range(0,
+                    firstLine.range.start.character,
+                    textEditor.document.lineCount - 1,
+                    lastLine.range.end.character);
+
+                textEditor.edit( editBuilder => {
+                    editBuilder.replace(textRange, message.val);
+                });
+                return;
+            }
+          },
+          undefined, 
+          context.subscriptions
+        );
       }
 
       postMessage = function(message){
@@ -66,6 +89,22 @@ class ViewLoader {
         <body>
           <div id="root"></div>
           ${scriptText}
+
+          <script nonce=${nonce}>
+            (function() {
+                const vscode = acquireVsCodeApi();
+                const textChangeBinding = (e) => {
+                  const message = e.data;
+                  switch (message.command) {
+                      case 'updateText':
+                          console.log("message from react", message);
+                          vscode.postMessage(message);
+                          break;
+                  }
+              }
+              window.addEventListener('message', (e) => textChangeBinding(e));
+            }())
+        </script>
         </body>
         </html>`;
 	}
