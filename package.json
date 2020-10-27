@@ -3,7 +3,7 @@
   "displayName": "Wardley Maps",
   "description": "Display and edit Wardley Maps",
   "icon": "images/icon.png",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "damonsk",
   "engines": {
     "vscode": "^1.50.0"

@@ -8,7 +8,7 @@ function randomInt(max) {
 const errorOnRandomLine = (d, doc) => {
     const line = doc.lineAt(randomInt(doc.lineCount));
     const diag = new vscode.Diagnostic(line.range,"random error",vscode.DiagnosticSeverity.Error);
-    d.set(doc.uri,[diag])
+    //d.set(doc.uri,[diag])
 };
 
 function activate(context) {
