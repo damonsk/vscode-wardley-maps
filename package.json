@@ -9,8 +9,18 @@
     "vscode": "^1.50.0"
   },
   "categories": [
+    "Formatters",
     "Other"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/damonsk/vscode-wardley-maps.git"
+  },
+  "bugs": {
+    "url": "https://github.com/damonsk/vscode-wardley-maps/issues"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "homepage": "https://github.com/damonsk/vscode-wardley-maps/blob/master/README.md",
   "activationEvents": [
     "onCommand:vscode-wardley-maps.helloWorld"
   ],
