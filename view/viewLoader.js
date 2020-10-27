@@ -69,13 +69,17 @@ class ViewLoader {
         const p = path.join(this._extensionPath, 'build', 'asset-manifest.json');
         const manifest = require(p);
         const scripts = manifest.entrypoints;
+        const styles = manifest.files['main.css'];
+
 
         let scriptsToInclude = scripts.map(p => this.buildUri(p));
+        let stylesToInclude = this.buildUri(styles);
         const nonce = this.getNonce();
         let scriptText = "";
+        scriptText = scriptText += `<link rel="stylesheet" nonce="${nonce}" href="${stylesToInclude}">`;
         for (let index = 0; index < scriptsToInclude.length; index++) {
-          const element = scriptsToInclude[index];
-          scriptText = scriptText += `<script nonce="${nonce}" src="${element}"></script>`;
+            let element = scriptsToInclude[index];
+            scriptText = scriptText += `<script nonce="${nonce}" src="${element}"></script>`;
         }
 
         return `<!DOCTYPE html>

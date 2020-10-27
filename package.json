@@ -3,7 +3,7 @@
   "displayName": "Wardley Maps",
   "description": "Display and edit Wardley Maps",
   "icon": "images/icon.png",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "damonsk",
   "engines": {
     "vscode": "^1.50.0"
@@ -20,7 +20,7 @@
     "url": "https://github.com/damonsk/vscode-wardley-maps/issues"
   },
   "license": "SEE LICENSE IN LICENSE",
-  "homepage": "https://github.com/damonsk/vscode-wardley-maps/blob/master/README.md",
+  
   "activationEvents": [
     "onCommand:vscode-wardley-maps.helloWorld"
   ],
