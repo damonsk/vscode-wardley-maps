@@ -14,6 +14,10 @@ Launch VS Code Quick Open (Ctrl+P), paste the following command, and press enter
 
 `ext install damonsk.vscode-wardley-maps`
 
+## Examples
+
+Clone the repository https://github.com/damonsk/wardley-maps-examples for example use-cases.
+
 ## Features
 
 This initial release brings with it basic syntax highlighting for Wardley Maps and the ability to render the map within VSCode.  From the Command Palette select 
