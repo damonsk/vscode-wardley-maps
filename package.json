@@ -3,7 +3,7 @@
   "displayName": "Wardley Maps",
   "description": "Display and edit Wardley Maps",
   "icon": "images/icon.png",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "publisher": "damonsk",
   "engines": {
     "vscode": "^1.50.0"
@@ -20,7 +20,6 @@
     "url": "https://github.com/damonsk/vscode-wardley-maps/issues"
   },
   "license": "SEE LICENSE IN LICENSE",
-  
   "activationEvents": [
     "onCommand:vscode-wardley-maps.helloWorld"
   ],
@@ -33,17 +32,27 @@
         "category": "Wardley Maps"
       }
     ],
-    "languages": [{
+    "languages": [
+      {
         "id": "wardleymap",
-        "aliases": ["WardleyMap", "wardleymap"],
-        "extensions": [".owm", ".wm"],
+        "aliases": [
+          "WardleyMap",
+          "wardleymap"
+        ],
+        "extensions": [
+          ".owm",
+          ".wm"
+        ],
         "configuration": "./language-configuration.json"
-    }],
-    "grammars": [{
+      }
+    ],
+    "grammars": [
+      {
         "language": "wardleymap",
         "scopeName": "source.wardleymap",
         "path": "./syntaxes/wardleymap.tmLanguage.json"
-    }]
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "yarn run compile",
@@ -83,7 +92,7 @@
     "react-bootstrap": "^1.4.0",
     "react-dom": "^17.0.1",
     "react-icons": "^3.11.0",
-    "wmlandscape": "file:../wmlandscape"
+    "wmlandscape": "file:../onlinewardleymaps/wmlandscape"
   },
   "browserslist": {
     "production": [
