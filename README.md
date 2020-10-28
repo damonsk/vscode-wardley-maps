@@ -1,7 +1,5 @@
 # Wardley Maps for Visual Studio Code
 
-[![Mentioned in Awesome Wardley Maps](https://awesome.re/mentioned-badge-flat.svg)](https://github.com/wardley-maps-community/awesome-wardley-maps#apps)
-
 Adds the ability to render and edit Wardley Maps within Visual Studio Code.  This extention leverages the engine from OnlineWardleyMaps.com and therefore all maps created using OnlineWardleyMaps are compatible with this extension and vice-versa.
 
 ## Supported Formats
