@@ -13,12 +13,64 @@
 		"keywords": {
 			"patterns": [
 				{
-					"match": "(y-axis|evolution|note|anchor|annotations|annotation|component|market|submap|title|style|outsource|build|product|buy|pipeline)(\\s*[-+\\'\";a-zA-Z0-9\\s*]+)",
+					"match": "(evolution|note|anchor|annotations|annotation|component|market|submap|title|style|outsource|build|product|buy|pipeline)(\\s*[-+\\'\";a-zA-Z0-9\\s*]+)",
 					"captures": {
 						"1": {
 							"name": "storage.type"
 						},
 						"2": {
+							"name": "entity.name.function"
+						}
+					}
+				},
+				{
+					"match": "(x-axis)(\\s*[-+\\'\";a-zA-Z0-9\\s*]+)(\\-\\>)(\\s*[-+\\'\";a-zA-Z0-9\\s*]+)(\\-\\>)(\\s*[-+\\'\";a-zA-Z0-9\\s*]+)(\\-\\>)(\\s*[-+\\'\";a-zA-Z0-9\\s*]+)",
+					"captures": {
+						"1": {
+							"name": "storage.type"
+						},
+						"2": {
+							"name": "entity.name.function"
+						},
+						"3": {
+							"name": "keyword.operator.assignment.js"
+						},
+						"4": {
+							"name": "entity.name.function"
+						},
+						"5": {
+							"name": "keyword.operator.assignment.js"
+						},
+						"6": {
+							"name": "entity.name.function"
+						},
+						"7": {
+							"name": "keyword.operator.assignment.js"
+						},
+						"8": {
+							"name": "entity.name.function"
+						}
+					}
+				},
+				{
+					"match": "(y-axis)(\\s*[-+\\'\";a-zA-Z0-9\\s*]+)(\\-\\>)(\\s*[-+\\'\";a-zA-Z0-9\\s*]+)(\\-\\>)(\\s*[-+\\'\";a-zA-Z0-9\\s*]+)",
+					"captures": {
+						"1": {
+							"name": "storage.type"
+						},
+						"2": {
+							"name": "entity.name.function"
+						},
+						"3": {
+							"name": "keyword.operator.assignment.js"
+						},
+						"4": {
+							"name": "entity.name.function"
+						},
+						"5": {
+							"name": "keyword.operator.assignment.js"
+						},
+						"6": {
 							"name": "entity.name.function"
 						}
 					}
@@ -62,7 +114,7 @@
 					}
 				},
 				  {
-					"match": "(\\[*)(\\[)(\\d+(?:\\.\\d{1,})*)(\\,\\s*)(\\d+(?:\\.\\d{1,}))(\\])(\\]*)",
+					"match": "(\\[*)(\\[)(\\d+(?:\\.\\d{1,})*|\\.\\d{1,}*)(\\,\\s*)(\\d+(?:\\.\\d{1,})*|\\.\\d{1,}*)(\\])(\\]*)",
 					"captures": 
 					{
 					  "1": {
@@ -111,7 +163,7 @@
 					}
 				},
 				{
-					"match": "(pioneers|settlers|townplanners)(\\s*\\[)(\\d+(?:\\.\\d{1,})*)(\\,\\s*)(\\d+(?:\\.\\d{1,})*)(\\,\\s*)(\\d+(?:\\.\\d{1,})*)(\\,\\s*)(\\d+(?:\\.\\d{1,}))(\\])",
+					"match": "(pioneers|settlers|townplanners)(\\s*\\[)(\\d+(?:\\.\\d{1,})*|\\.\\d{1,}*)(\\,\\s*)(\\d+(?:\\.\\d{1,})*|\\.\\d{1,}*)(\\,\\s*)(\\d+(?:\\.\\d{1,})*|\\.\\d{1,}*)(\\,\\s*)(\\d+(?:\\.\\d{1,})*|\\.\\d{1,}*)(\\])",
 					"captures": {
 						"1": {
 							"name": "storage.type"
@@ -183,7 +235,7 @@
 					}
 				},
 				{
-					"match": "(\\s*\\()([-+(build|buy|outsource|market)\\s*]+)(\\))",
+					"match": "(\\s*\\()([-+(build|buy|outsource|market|inertia)\\s*]+)(\\))",
 					"captures": {
 						"1": {
 							"name": "punctuation.paren.open"

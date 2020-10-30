@@ -1,19 +1,23 @@
 {
-    "Basic Map Component": 
-    {
+    "Anchor": {
+        "prefix": "anchor",
+        "body": "anchor ${1:name} [${2:0.9}, ${3:0.1}]",
+        "description": "Anchor of the value chain"
+    },
+    "Basic Map Component": {
         "prefix": "component",
-        "body": "component ${1:name} [${2:visibility}, ${3:maturity}]",
-        "description": "Adds a basic Start-> State -> Stop template sequence to the current context within the State Trasition Diagram. This can also be used for sub-states. Note, the length of the line can be forced to change size by adding/removing extra dashes"
+        "body": "component ${1:name} [${2:0.9}, ${3:0.1}]",
+        "description": "A generic component in the value chain"
     },
     "Market Component": {
         "prefix": "market",
-        "body": "market ${1:name} [${2:visibility}, ${3:maturity}]",
-        "description": "Adds a basic Start-> State -> Stop template sequence to the current context within the State Trasition Diagram. This can also be used for sub-states. Note, the length of the line can be forced to change size by adding/removing extra dashes"
+        "body": "market ${1:name} [${2:0.9}, ${3:0.1}]",
+        "description": "A market component in the value chain"
     },
     "Submap Component": {
         "prefix": "submap",
         "body": [
-            "submap ${1:name} [${2:visibility}, ${3:maturity}] url(${4:urlName})",
+            "submap ${1:name} [${2:0.9}, ${3:0.9}] url(${4:urlName})",
             "url ${4:urlName} [${5:urlAddress}]"
         ],
         "description": "A submap map component with a link to another wardley map."
@@ -21,36 +25,68 @@
     "Link Components": {
         "prefix": "link",
         "body": "${1:startElement}->${2:endElement}",
-        "description": "Adds a basic Start-> State -> Stop template sequence to the current context within the State Trasition Diagram. This can also be used for sub-states. Note, the length of the line can be forced to change size by adding/removing extra dashes"
+        "description": "Link two components in the value chain"
     },
     "PST": {
         "prefix": "pst",
-        "body": "${1|pioneers,settlers,townplanners|} [${2:startVisibility}, ${3:startMaturity}, ${4:endVisibility}, ${5:endMaturity}]",
-        "description": "Adds a basic Start-> State -> Stop template sequence to the current context within the State Trasition Diagram. This can also be used for sub-states. Note, the length of the line can be forced to change size by adding/removing extra dashes"
+        "body": "${1|pioneers,settlers,townplanners|} [${2:0.9}, ${3:0.1}, ${4:0.6}, ${5:0.8}]",
+        "description": "Highlight aptitude/attitude (pioneers, settlers or townplanners)"
     },
     "Pioneers": {
         "prefix": "pioneers",
-        "body": "pioneers [${1:startVisibility}, ${2:startMaturity}, ${3:endVisibility}, ${4:endMaturity}]",
-        "description": "Adds a basic Start-> State -> Stop template sequence to the current context within the State Trasition Diagram. This can also be used for sub-states. Note, the length of the line can be forced to change size by adding/removing extra dashes"
+        "body": "pioneers [${2:0.9}, ${3:0.1}, ${4:0.6}, ${5:0.8}]",
+        "description": "Pioneers are BRILLIANT! - Highlight aptitude/attitude of pioneers"
     },
     "Settlers": {
         "prefix": "settlers",
-        "body": "settlers [${1:startVisibility}, ${2:startMaturity}, ${3:endVisibility}, ${4:endMaturity}]",
-        "description": "Adds a basic Start-> State -> Stop template sequence to the current context within the State Trasition Diagram. This can also be used for sub-states. Note, the length of the line can be forced to change size by adding/removing extra dashes"
+        "body": "settlers [${2:0.9}, ${3:0.1}, ${4:0.6}, ${5:0.8}]",
+        "description": "Highlight aptitude/attitude of settlers"
     },
     "TownPlanners": {
         "prefix": "townplanners",
-        "body": "townplanners [${1:startVisibility}, ${2:startMaturity}, ${3:endVisibility}, ${4:endMaturity}]",
-        "description": "Adds a basic Start-> State -> Stop template sequence to the current context within the State Trasition Diagram. This can also be used for sub-states. Note, the length of the line can be forced to change size by adding/removing extra dashes"
+        "body": "townplanners [${2:0.9}, ${3:0.1}, ${4:0.6}, ${5:0.8}]",
+        "description": "Highlight aptitude/attitude of townplanners"
     },
     "Method": {
         "prefix": "method",
         "body": "${1|build,buy,outsource|} ${2:component}",
-        "description": ""
+        "description": "Set components method - build/buy/outsource"
     },
     "Evolving": {
         "prefix": "evolve",
-        "body": "evolve ${1:component} ${2:maturity}",
-        "description": "Adds a basic Start-> State -> Stop template sequence to the current context within the State Trasition Diagram. This can also be used for sub-states. Note, the length of the line can be forced to change size by adding/removing extra dashes"
-    }
+        "body": "evolve ${1:foo} ${2:0.9}",
+        "description": "Evolve a components maturity"
+    },
+    "XAxis": {
+        "prefix": "x-axis",
+        "body": "x-axis ${1:Genesis}->${2:Custom-Built}->${3:Product}->${4:Commodity}",
+        "description": "Change stages of evolution"
+    },
+    "YAxis": {
+        "prefix": "y-axis",
+        "body": "y-axis ${1:Label}->${2:Min}->${3:Max}",
+        "description": "Change y-axis labels"
+    },
+    "Label": {
+        "prefix": "label",
+        "body": "label [${1:-10}, ${2:-10}]",
+        "description": "Change label position"
+    },
+    "Annotation": {
+        "prefix": "annotation",
+        "body": [
+            "annotation ${1:1} [${2:0.9}, ${3:0.1}] ${4:summary}",
+        ],
+        "description": "Annoation"
+    },
+    "AnnotationMultiple": {
+        "prefix": "annotation",
+        "body": "annotation ${1:1} [[${2:0.9}, ${3:0.1}], [${4:0.8}, ${5:0.1}]] ${6:summary}",
+        "description": "Multiple annoations"
+    },
+    "Note": {
+        "prefix": "note",
+        "body": "note ${1:note text} [${2:0.9}, ${3:0.1}]",
+        "description": "Generic note"
+    },
 }

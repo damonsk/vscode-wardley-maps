@@ -176,7 +176,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 				}
 			];
 		}
-		diagnostics.push(diagnostic);
+		//diagnostics.push(diagnostic);
 	}
 
 	// Send the computed diagnostics to VSCode.
@@ -192,52 +192,87 @@ connection.onDidChangeWatchedFiles(_change => {
 connection.onCompletion(
 	(_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
 		
-		
-		// which code complete got requested. For the example we ignore this
-		// info and always provide the same completion items.
 		let d = documents.get(_textDocumentPosition.textDocument.uri);
 		if(d === undefined) return [];
 
+		const types :string[] = [
+			"component", 
+			"market", 
+			"submap", 
+			"pipeline", 
+			"pioneers", 
+			"settlers", 
+			"townplanners",
+			"note", 
+			"annotation",
+			"annotations",
+			"x-axis", 
+			"y-axis", 
+			"style", 
+			"title", 
+			"anchor"
+		]
+
 		let rawVariables :string[] = [];
-		let vars :CompletionItem[] = [{
-			label: 'component',
-			kind: CompletionItemKind.Method,
-			data: 1
-		},
-		{
-			label: 'market',
-			kind: CompletionItemKind.Class,
-			data: 2
-		}];
-		
-		let lines :string[] = d.getText().split('\n');
-
-		for (let index = 0; index < lines.length; index++) {
-			const element = lines[index];
-			if(element.indexOf('component ') == 0){
-				rawVariables.push(element.split('component ')[1].split('[')[0].trim());
+		let vars :CompletionItem[] = types.map((t) => {
+			return {
+				label: t,
+				kind: CompletionItemKind.Function,
 			}
-		}
-	
-		let currentLine = lines[_textDocumentPosition.position.line].trim()
-		
-		for (let l = 0; l < rawVariables.length; l++) {
-			const e = rawVariables[l];
-			
-			if(e === currentLine){
-				console.log("in line", e, currentLine);
-				vars.push({label:"->", kind:CompletionItemKind.Operator });
+		});
+
+		const lines :string[] = d.getText().split('\n');
+		const currentLine = lines[_textDocumentPosition.position.line].trim()
+
+
+		const extractVariable = (s:string, line:string, toMutate:string[]) => {
+			if(line.trim().indexOf(`${s} `) == 0){
+				toMutate.push(line.split(`${s} `)[1].split('[')[0].trim());
 			}
 		}
 
-		console.log(vars);
+		const willResultInVariable = ["component", "submap", "market", "anchor", "build", "buy", "outsource", "evolve"];
+
+		lines.forEach( line => 
+			willResultInVariable.forEach( start => 
+				extractVariable(start, line, rawVariables)
+			)
+		)
 		
-		for (let l = 0; l < rawVariables.length; l++) {
-			vars.push({label:rawVariables[l], kind:CompletionItemKind.Variable });
+		const variableCompletes :CompletionItem[] = rawVariables.map( v => { return {label:v, kind:CompletionItemKind.Variable } });
+
+
+		if(_textDocumentPosition.position.character > 0){
+			console.log('_textDocumentPosition.position.character > 0');
+			//exisitng content
+			if(currentLine.indexOf('->') > -1 && currentLine.indexOf('->') === _textDocumentPosition.position.character -2){
+				// show variables only.
+				return variableCompletes;
+			}
+
+			if( (currentLine.indexOf('component ') > -1 || currentLine.indexOf('market ') > -1 || currentLine.indexOf('submap ') > -1 )
+				&& currentLine.indexOf('(') < _textDocumentPosition.position.character
+				&& currentLine.indexOf(')') >= _textDocumentPosition.position.character){
+				// decorators (build/)
+				return ["build", "buy", "outsource", "market", "ecosystem", "inertia"].map( v => { return {label:v, kind:CompletionItemKind.Keyword } })
+			}
+
+			if(currentLine.trim().indexOf('style') === 0){
+				return ["plain", "colour", "wardley"].map( v => { return {label:v, kind:CompletionItemKind.Keyword } })
+			}
+
+			return vars.concat(variableCompletes);
+
 		}
+		else {
+			console.log('_textDocumentPosition.position.character > 0');
+		}
+
 		
 
-		return vars;
+		
+		console.log('default return');
+		return vars.concat(variableCompletes);
 	}
 );
 
@@ -245,13 +280,13 @@ connection.onCompletion(
 // the completion list.
 connection.onCompletionResolve(
 	(item: CompletionItem): CompletionItem => {
-		if (item.data === 1) {
-			item.detail = 'TypeScript details';
-			item.documentation = 'TypeScript documentation';
-		} else if (item.data === 2) {
-			item.detail = 'JavaScript details';
-			item.documentation = 'JavaScript documentation';
-		}
+		// if (item.data === 1) {
+		// 	item.detail = 'TypeScript details';
+		// 	item.documentation = 'TypeScript documentation';
+		// } else if (item.data === 2) {
+		// 	item.detail = 'JavaScript details';
+		// 	item.documentation = 'JavaScript documentation';
+		// }
 		return item;
 	}
 );
