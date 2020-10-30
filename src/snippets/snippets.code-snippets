@@ -1,0 +1,56 @@
+{
+    "Basic Map Component": 
+    {
+        "prefix": "component",
+        "body": "component ${1:name} [${2:visibility}, ${3:maturity}]",
+        "description": "Adds a basic Start-> State -> Stop template sequence to the current context within the State Trasition Diagram. This can also be used for sub-states. Note, the length of the line can be forced to change size by adding/removing extra dashes"
+    },
+    "Market Component": {
+        "prefix": "market",
+        "body": "market ${1:name} [${2:visibility}, ${3:maturity}]",
+        "description": "Adds a basic Start-> State -> Stop template sequence to the current context within the State Trasition Diagram. This can also be used for sub-states. Note, the length of the line can be forced to change size by adding/removing extra dashes"
+    },
+    "Submap Component": {
+        "prefix": "submap",
+        "body": [
+            "submap ${1:name} [${2:visibility}, ${3:maturity}] url(${4:urlName})",
+            "url ${4:urlName} [${5:urlAddress}]"
+        ],
+        "description": "A submap map component with a link to another wardley map."
+    },
+    "Link Components": {
+        "prefix": "link",
+        "body": "${1:startElement}->${2:endElement}",
+        "description": "Adds a basic Start-> State -> Stop template sequence to the current context within the State Trasition Diagram. This can also be used for sub-states. Note, the length of the line can be forced to change size by adding/removing extra dashes"
+    },
+    "PST": {
+        "prefix": "pst",
+        "body": "${1|pioneers,settlers,townplanners|} [${2:startVisibility}, ${3:startMaturity}, ${4:endVisibility}, ${5:endMaturity}]",
+        "description": "Adds a basic Start-> State -> Stop template sequence to the current context within the State Trasition Diagram. This can also be used for sub-states. Note, the length of the line can be forced to change size by adding/removing extra dashes"
+    },
+    "Pioneers": {
+        "prefix": "pioneers",
+        "body": "pioneers [${1:startVisibility}, ${2:startMaturity}, ${3:endVisibility}, ${4:endMaturity}]",
+        "description": "Adds a basic Start-> State -> Stop template sequence to the current context within the State Trasition Diagram. This can also be used for sub-states. Note, the length of the line can be forced to change size by adding/removing extra dashes"
+    },
+    "Settlers": {
+        "prefix": "settlers",
+        "body": "settlers [${1:startVisibility}, ${2:startMaturity}, ${3:endVisibility}, ${4:endMaturity}]",
+        "description": "Adds a basic Start-> State -> Stop template sequence to the current context within the State Trasition Diagram. This can also be used for sub-states. Note, the length of the line can be forced to change size by adding/removing extra dashes"
+    },
+    "TownPlanners": {
+        "prefix": "townplanners",
+        "body": "townplanners [${1:startVisibility}, ${2:startMaturity}, ${3:endVisibility}, ${4:endMaturity}]",
+        "description": "Adds a basic Start-> State -> Stop template sequence to the current context within the State Trasition Diagram. This can also be used for sub-states. Note, the length of the line can be forced to change size by adding/removing extra dashes"
+    },
+    "Method": {
+        "prefix": "method",
+        "body": "${1|build,buy,outsource|} ${2:component}",
+        "description": ""
+    },
+    "Evolving": {
+        "prefix": "evolve",
+        "body": "evolve ${1:component} ${2:maturity}",
+        "description": "Adds a basic Start-> State -> Stop template sequence to the current context within the State Trasition Diagram. This can also be used for sub-states. Note, the length of the line can be forced to change size by adding/removing extra dashes"
+    }
+}

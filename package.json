@@ -21,10 +21,34 @@
   },
   "license": "SEE LICENSE IN LICENSE",
   "activationEvents": [
-    "onCommand:vscode-wardley-maps.helloWorld"
+    "onCommand:vscode-wardley-maps.helloWorld",
+    "onLanguage:wardleymap"
   ],
-  "main": "./ext-src/extension.js",
+  "main": "./extension/out/extension.js",
   "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "Example configuration",
+      "properties": {
+        "languageServerExample.maxNumberOfProblems": {
+          "scope": "resource",
+          "type": "number",
+          "default": 100,
+          "description": "Controls the maximum number of problems produced by the server."
+        },
+        "languageServerExample.trace.server": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "off",
+          "description": "Traces the communication between VS Code and the language server."
+        }
+      }
+    },
     "commands": [
       {
         "command": "vscode-wardley-maps.helloWorld",
@@ -52,6 +76,12 @@
         "scopeName": "source.wardleymap",
         "path": "./syntaxes/wardleymap.tmLanguage.json"
       }
+    ],
+    "snippets": [
+      {
+        "language": "wardleymap",
+        "path": "./snippets/snippets.code-snippets"
+      }
     ]
   },
   "scripts": {
@@ -60,6 +90,8 @@
     "watch": "npm-run-all -p watch:*",
     "compile:views": "react-app-rewired build",
     "watch:views": "react-app-rewired start",
+    "compile:ext": "tsc -b",
+    "watch:ext": "tsc -b -w",
     "lint": "eslint .",
     "pretest": "yarn run lint",
     "test": "node ./test/runTest.js"
@@ -79,7 +111,7 @@
     "react-app-rewired": "^2.1.6",
     "react-hot-loader": "^4.13.0",
     "react-scripts": "^4.0.0",
-    "typescript": "^4.0.2",
+    "typescript": "^4.0.5",
     "vscode-test": "^1.4.0",
     "yarn-run-all": "^3.1.1"
   },
@@ -92,6 +124,7 @@
     "react-bootstrap": "^1.4.0",
     "react-dom": "^17.0.1",
     "react-icons": "^3.11.0",
+    "vscode-languageclient": "^6.1.3",
     "wmlandscape": "../onlinewardleymaps/wmlandscape"
   },
   "browserslist": {
