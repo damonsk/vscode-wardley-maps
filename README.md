@@ -35,6 +35,10 @@ Here is a brief change history for the extention
 
 ### 0.0.6
 
+Added in `ecosystem` components. Improved layout.
+
+### 0.0.6
+
 Added in intellisense/auto completions, snippets and improved code highlighting.  Auto completions accessible via <kbd>CTRL</kbd>+<kbd>Space</kbd>.
 
 ### 0.0.1
