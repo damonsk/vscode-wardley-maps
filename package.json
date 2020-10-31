@@ -1,152 +1,153 @@
 {
-  "name": "vscode-wardley-maps",
-  "displayName": "Wardley Maps",
-  "description": "Display and edit Wardley Maps",
-  "icon": "images/icon.png",
-  "version": "1.0.6",
-  "publisher": "damonsk",
-  "engines": {
-    "vscode": "^1.50.0"
-  },
-  "categories": [
-    "Formatters",
-    "Other"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/damonsk/vscode-wardley-maps.git"
-  },
-  "bugs": {
-    "url": "https://github.com/damonsk/vscode-wardley-maps/issues"
-  },
-  "license": "SEE LICENSE IN LICENSE",
-  "activationEvents": [
-    "onCommand:vscode-wardley-maps.helloWorld",
-    "onLanguage:wardleymap"
-  ],
-  "main": "./extension/out/extension.js",
-  "contributes": {
-    "configuration": {
-      "type": "object",
-      "title": "Example configuration",
-      "properties": {
-        "wmLanguageServer.maxNumberOfProblems": {
-          "scope": "resource",
-          "type": "number",
-          "default": 100,
-          "description": "Controls the maximum number of problems produced by the server."
-        },
-        "languageServerExample.trace.server": {
-          "scope": "window",
-          "type": "string",
-          "enum": [
-            "off",
-            "messages",
-            "verbose"
-          ],
-          "default": "off",
-          "description": "Traces the communication between VS Code and the language server."
-        }
-      }
-    },
-    "commands": [
-      {
-        "command": "vscode-wardley-maps.helloWorld",
-        "title": "Display Map",
-        "category": "Wardley Maps"
-      }
-    ],
-    "languages": [
-      {
-        "id": "wardleymap",
-        "aliases": [
-          "WardleyMap",
-          "wardleymap"
-        ],
-        "extensions": [
-          ".owm",
-          ".wm"
-        ],
-        "configuration": "./language-configuration.json"
-      }
-    ],
-    "grammars": [
-      {
-        "language": "wardleymap",
-        "scopeName": "source.wardleymap",
-        "path": "./syntaxes/wardleymap.tmLanguage.json"
-      }
-    ],
-    "snippets": [
-      {
-        "language": "wardleymap",
-        "path": "./snippets/snippets.code-snippets"
-      }
-    ]
-  },
-  "lint-staged": {
-    "*.{js,jsx}": [
-      "yarn run prettify --staged",
-      "yarn run lint src/ --fix",
-      "git add"
-    ]
-  },
-  "scripts": {
-    "vscode:prepublish": "yarn run compile",
-    "compile": "npm-run-all compile:*",
-    "watch": "npm-run-all -p watch:*",
-    "compile:views": "react-app-rewired build",
-    "watch:views": "react-app-rewired start",
-    "compile:ext": "tsc -b",
-    "watch:ext": "tsc -b -w",
-    "precommit": "lint-staged",
-    "lint": "eslint src/",
-    "prettify": "pretty-quick"
-  },
-  "devDependencies": {
-    "@types/glob": "^7.1.3",
-    "@types/mocha": "^8.0.0",
-    "@types/node": "^12.11.7",
-    "@types/vscode": "^1.50.0",
-    "eslint": "^7.9.0",
-    "eslint-config-prettier": "^6.15.0",
-    "eslint-plugin-prettier": "^3.1.4",
-    "eslint-plugin-react": "^7.21.5",
-    "eslint-plugin-react-hooks": "^4.2.0",
-    "glob": "^7.1.6",
-    "mocha": "^8.1.3",
-    "node-sass": "^4.14.1",
-    "prettier": "^2.1.2",
-    "react-app-rewire-hot-loader": "^2.0.1",
-    "react-app-rewired": "^2.1.6",
-    "react-hot-loader": "^4.13.0",
-    "react-scripts": "^4.0.0",
-    "typescript": "^4.0.5",
-    "vscode-test": "^1.4.0",
-    "yarn-run-all": "^3.1.1"
-  },
-  "dependencies": {
-    "bootstrap": "^4.5.3",
-    "core-js": "^3.6.5",
-    "lodash.merge": "^4.6.2",
-    "prop-types": "^15.7.2",
-    "react": "^17.0.1",
-    "react-bootstrap": "^1.4.0",
-    "react-dom": "^17.0.1",
-    "react-icons": "^3.11.0",
-    "vscode-languageclient": "^6.1.3",
-    "wmlandscape": "^1.0.7"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+	"name": "vscode-wardley-maps",
+	"displayName": "Wardley Maps",
+	"description": "Display and edit Wardley Maps",
+	"icon": "images/icon.png",
+	"version": "1.0.6",
+	"publisher": "damonsk",
+	"engines": {
+		"vscode": "^1.50.0"
+	},
+	"categories": [
+		"Formatters",
+		"Other"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/damonsk/vscode-wardley-maps.git"
+	},
+	"bugs": {
+		"url": "https://github.com/damonsk/vscode-wardley-maps/issues"
+	},
+	"license": "SEE LICENSE IN LICENSE",
+	"activationEvents": [
+		"onCommand:vscode-wardley-maps.helloWorld",
+		"onLanguage:wardleymap"
+	],
+	"main": "./extension/out/extension.js",
+	"contributes": {
+		"configuration": {
+			"type": "object",
+			"title": "Example configuration",
+			"properties": {
+				"wmLanguageServer.maxNumberOfProblems": {
+					"scope": "resource",
+					"type": "number",
+					"default": 100,
+					"description": "Controls the maximum number of problems produced by the server."
+				},
+				"languageServerExample.trace.server": {
+					"scope": "window",
+					"type": "string",
+					"enum": [
+						"off",
+						"messages",
+						"verbose"
+					],
+					"default": "off",
+					"description": "Traces the communication between VS Code and the language server."
+				}
+			}
+		},
+		"commands": [
+			{
+				"command": "vscode-wardley-maps.helloWorld",
+				"title": "Display Map",
+				"category": "Wardley Maps"
+			}
+		],
+		"languages": [
+			{
+				"id": "wardleymap",
+				"aliases": [
+					"WardleyMap",
+					"wardleymap"
+				],
+				"extensions": [
+					".owm",
+					".wm"
+				],
+				"configuration": "./language-configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "wardleymap",
+				"scopeName": "source.wardleymap",
+				"path": "./syntaxes/wardleymap.tmLanguage.json"
+			}
+		],
+		"snippets": [
+			{
+				"language": "wardleymap",
+				"path": "./snippets/snippets.code-snippets"
+			}
+		]
+	},
+	"lint-staged": {
+		"*.{js,jsx}": [
+			"yarn run prettify --staged",
+			"yarn run lint src/ --fix",
+			"git add"
+		]
+	},
+	"scripts": {
+		"vscode:prepublish": "yarn run compile",
+		"compile": "npm-run-all compile:*",
+		"watch": "npm-run-all -p watch:*",
+		"compile:views": "react-app-rewired build",
+		"watch:views": "react-app-rewired start",
+		"compile:ext": "tsc -b",
+		"watch:ext": "tsc -b -w",
+		"precommit": "lint-staged",
+		"lint": "eslint src/",
+		"prettify": "pretty-quick"
+	},
+	"devDependencies": {
+		"@types/glob": "^7.1.3",
+		"@types/mocha": "^8.0.0",
+		"@types/node": "^12.11.7",
+		"@types/vscode": "^1.50.0",
+		"eslint": "^7.9.0",
+		"eslint-config-prettier": "^6.15.0",
+		"eslint-plugin-prettier": "^3.1.4",
+		"eslint-plugin-react": "^7.21.5",
+		"eslint-plugin-react-hooks": "^4.2.0",
+		"glob": "^7.1.6",
+		"mocha": "^8.1.3",
+		"node-sass": "^4.14.1",
+		"prettier": "^2.1.2",
+		"pretty-quick": "^3.1.0",
+		"react-app-rewire-hot-loader": "^2.0.1",
+		"react-app-rewired": "^2.1.6",
+		"react-hot-loader": "^4.13.0",
+		"react-scripts": "^4.0.0",
+		"typescript": "^4.0.5",
+		"vscode-test": "^1.4.0",
+		"yarn-run-all": "^3.1.1"
+	},
+	"dependencies": {
+		"bootstrap": "^4.5.3",
+		"core-js": "^3.6.5",
+		"lodash.merge": "^4.6.2",
+		"prop-types": "^15.7.2",
+		"react": "^17.0.1",
+		"react-bootstrap": "^1.4.0",
+		"react-dom": "^17.0.1",
+		"react-icons": "^3.11.0",
+		"vscode-languageclient": "^6.1.3",
+		"wmlandscape": "^1.0.7"
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	}
 }

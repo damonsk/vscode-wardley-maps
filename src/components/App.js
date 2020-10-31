@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { hot } from 'react-hot-loader/root';
-import {MapView, MapStyles, Defaults} from 'wmlandscape';
-import {Converter} from 'wmlandscape';
+import { MapView, MapStyles, Defaults } from 'wmlandscape';
+import { Converter } from 'wmlandscape';
 
-
-const App = _ => {
-
-    const [mapText, setMapText] = useState("");
-    const [mapTitle, setMapTitle] = useState('Untitled Map');
+const App = (_) => {
+	const [mapText, setMapText] = useState('');
+	const [mapTitle, setMapTitle] = useState('Untitled Map');
 	const [mapComponents, setMapComponents] = useState([]);
 	const [mapSubMaps, setMapSubMaps] = useState([]);
 	const [mapMarkets, setMarkets] = useState([]);
@@ -25,8 +23,10 @@ const App = _ => {
 		[]
 	);
 
-	const [mapDimensions, setMapDimensions] = useState({width: 500,
-		height: 500});
+	const [mapDimensions, setMapDimensions] = useState({
+		width: 500,
+		height: 500,
+	});
 	const [mapEvolutionStates, setMapEvolutionStates] = useState(
 		Defaults.EvolutionStages
 	);
@@ -40,22 +40,22 @@ const App = _ => {
 	const mapRef = useRef(null);
 	const [mainViewHeight, setMainViewHeight] = useState(100);
 
-    const mutateMapTextIn = newText => {
+	const mutateMapTextIn = (newText) => {
 		setMapText(newText);
 		console.log('mutateMapTextIn');
 	};
 
-	const mutateMapText = newText => {
+	const mutateMapText = (newText) => {
 		setMapText(newText);
 		console.log('mutateMapText');
 		window.postMessage({ command: 'updateText', val: newText });
 	};
 
-    const getHeight = () => {
+	const getHeight = () => {
 		var winHeight = window.innerHeight;
 		return winHeight - 200;
 	};
-	const getWidth = function() {
+	const getWidth = function () {
 		return document.getElementById('map').clientWidth - 50;
 	};
 
@@ -89,8 +89,8 @@ const App = _ => {
 			window.removeEventListener('load', initialLoad);
 		};
 	});
-    
-    React.useEffect(() => {
+
+	React.useEffect(() => {
 		try {
 			var r = new Converter().parse(mapText);
 			setMapTitle(r.title);
@@ -121,21 +121,22 @@ const App = _ => {
 		}
 	}, [mapText]);
 
-    useEffect(() => {
-        const textChangeBinding = (e) => {
-            const message = e.data;
-            switch (message.command) {
-                case 'text':
-                    console.log("message", message);
-                    mutateMapTextIn(message.val);
-                    break;
-            }
-        }
-        window.addEventListener('message', (e) => textChangeBinding(e));
-        return () => window.removeEventListener('message', (e) => textChangeBinding(e));
-    }, [mutateMapTextIn]);
+	useEffect(() => {
+		const textChangeBinding = (e) => {
+			const message = e.data;
+			switch (message.command) {
+				case 'text':
+					console.log('message', message);
+					mutateMapTextIn(message.val);
+					break;
+			}
+		};
+		window.addEventListener('message', (e) => textChangeBinding(e));
+		return () =>
+			window.removeEventListener('message', (e) => textChangeBinding(e));
+	}, [mutateMapTextIn]);
 
-    React.useEffect(() => {
+	React.useEffect(() => {
 		switch (mapStyle) {
 			case 'colour':
 			case 'color':
@@ -152,41 +153,41 @@ const App = _ => {
 		}
 	}, [mapStyle]);
 
-    return (
+	return (
 		<React.Fragment>
-            <div style={{background: "white", padding: "15px"}}>
-                <MapView
-                    mapTitle={mapTitle}
-                    mapComponents={mapComponents}
-                    mapMarkets={mapMarkets}
-                    mapEcosystems={mapEcosystems}
-                    mapSubMaps={mapSubMaps}
-                    mapEvolved={mapEvolved}
-                    mapPipelines={mapPipelines}
-                    mapAnchors={mapAnchors}
-                    mapLinks={mapLinks}
-                    mapAttitudes={mapAttitudes}
-                    launchUrl={() => console.log('launchUrl not implemented')}
-                    mapNotes={mapNotes}
-                    mapAnnotations={mapAnnotations}
-                    mapAnnotationsPresentation={mapAnnotationsPresentation}
-                    mapMethods={mapMethods}
-                    mapStyleDefs={mapStyleDefs}
-                    mapYAxis={mapYAxis}
-                    mapDimensions={mapDimensions}
-                    mapEvolutionStates={mapEvolutionStates}
-                    mapRef={mapRef}
-                    mapText={mapText}
-                    mutateMapText={mutateMapText}
-                    setMetaText={() => console.log('set meta text not implemented')}
-                    metaText={() => console.log('meta text not implemented')}
-                    evolutionOffsets={Defaults.EvoOffsets}
-                    setHighlightLine={setHighlightLine}
-                />
-            </div>
-            <pre>{mapText}</pre>
-        </React.Fragment>
-    )
-}
+			<div style={{ background: 'white', padding: '15px' }}>
+				<MapView
+					mapTitle={mapTitle}
+					mapComponents={mapComponents}
+					mapMarkets={mapMarkets}
+					mapEcosystems={mapEcosystems}
+					mapSubMaps={mapSubMaps}
+					mapEvolved={mapEvolved}
+					mapPipelines={mapPipelines}
+					mapAnchors={mapAnchors}
+					mapLinks={mapLinks}
+					mapAttitudes={mapAttitudes}
+					launchUrl={() => console.log('launchUrl not implemented')}
+					mapNotes={mapNotes}
+					mapAnnotations={mapAnnotations}
+					mapAnnotationsPresentation={mapAnnotationsPresentation}
+					mapMethods={mapMethods}
+					mapStyleDefs={mapStyleDefs}
+					mapYAxis={mapYAxis}
+					mapDimensions={mapDimensions}
+					mapEvolutionStates={mapEvolutionStates}
+					mapRef={mapRef}
+					mapText={mapText}
+					mutateMapText={mutateMapText}
+					setMetaText={() => console.log('set meta text not implemented')}
+					metaText={() => console.log('meta text not implemented')}
+					evolutionOffsets={Defaults.EvoOffsets}
+					setHighlightLine={setHighlightLine}
+				/>
+			</div>
+			<pre>{mapText}</pre>
+		</React.Fragment>
+	);
+};
 
 export default hot(App);
