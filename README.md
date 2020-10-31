@@ -33,7 +33,7 @@ Only one map can be rendered at any given time, we'll look to address with futur
 
 Here is a brief change history for the extention 
 
-### 0.0.5
+### 0.0.6
 
 Added in intellisense/auto completions, snippets and improved code highlighting.  Auto completions accessible via <kbd>CTRL</kbd>+<kbd>Space</kbd>.
 

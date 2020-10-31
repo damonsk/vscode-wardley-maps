@@ -3,7 +3,7 @@
   "displayName": "Wardley Maps",
   "description": "Display and edit Wardley Maps",
   "icon": "images/icon.png",
-  "version": "0.0.5",
+  "version": "1.0.6",
   "publisher": "damonsk",
   "engines": {
     "vscode": "^1.50.0"
@@ -30,7 +30,7 @@
       "type": "object",
       "title": "Example configuration",
       "properties": {
-        "languageServerExample.maxNumberOfProblems": {
+        "wmLanguageServer.maxNumberOfProblems": {
           "scope": "resource",
           "type": "number",
           "default": 100,

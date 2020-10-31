@@ -1,7 +1,3 @@
-/* --------------------------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Licensed under the MIT License. See License.txt in the project root for license information.
- * ------------------------------------------------------------------------------------------ */
 import { unwatchFile } from 'fs';
 import { versions } from 'process';
 import {
@@ -102,7 +98,7 @@ connection.onDidChangeConfiguration(change => {
 		documentSettings.clear();
 	} else {
 		globalSettings = <ExampleSettings>(
-			(change.settings.languageServerExample || defaultSettings)
+			(change.settings.wmLanguageServer || defaultSettings)
 		);
 	}
 
@@ -118,7 +114,7 @@ function getDocumentSettings(resource: string): Thenable<ExampleSettings> {
 	if (!result) {
 		result = connection.workspace.getConfiguration({
 			scopeUri: resource,
-			section: 'languageServerExample'
+			section: 'wmLanguageServer'
 		});
 		documentSettings.set(resource, result);
 	}
@@ -231,7 +227,7 @@ connection.onCompletion(
 			}
 		}
 
-		const willResultInVariable = ["component", "submap", "market", "anchor", "build", "buy", "outsource", "evolve"];
+		const willResultInVariable = ["component", "submap", "market", "anchor"];
 
 		lines.forEach( line => 
 			willResultInVariable.forEach( start => 
