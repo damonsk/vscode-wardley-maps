@@ -1,10 +1,10 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { hot } from 'react-hot-loader/root';
 import {MapView, MapStyles, Defaults} from 'wmlandscape';
 import {Converter} from 'wmlandscape';
 
 
-const App = props => {
+const App = _ => {
 
     const [mapText, setMapText] = useState("");
     const [mapTitle, setMapTitle] = useState('Untitled Map');
