@@ -47,7 +47,7 @@ const App = () => {
 
 	const getHeight = () => {
 		var winHeight = window.innerHeight;
-		return winHeight - 200;
+		return winHeight - 120;
 	};
 	const getWidth = function () {
 		return document.getElementById('map').clientWidth - 50;
@@ -157,7 +157,7 @@ const App = () => {
 
 	return (
 		<React.Fragment>
-			<div style={{ background: 'white', padding: '15px' }}>
+			<div>
 				<MapView
 					mapTitle={mapTitle}
 					mapComponents={mapComponents}
@@ -187,7 +187,6 @@ const App = () => {
 					setHighlightLine={setHighlightLine}
 				/>
 			</div>
-			<pre>{mapText}</pre>
 		</React.Fragment>
 	);
 };
