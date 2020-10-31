@@ -13,7 +13,7 @@
 		"keywords": {
 			"patterns": [
 				{
-					"match": "(evolution|note|anchor|annotations|annotation|component|market|submap|title|style|outsource|build|product|buy|pipeline)(\\s*[-+\\'\";a-zA-Z0-9\\s*]+)",
+					"match": "(evolution|note|anchor|annotations|annotation|component|market|submap|title|style|outsource|build|product|buy|pipeline|ecosystem)(\\s*[-+\\'\";a-zA-Z0-9\\s*]+)",
 					"captures": {
 						"1": {
 							"name": "storage.type"

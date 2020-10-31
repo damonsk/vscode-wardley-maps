@@ -206,7 +206,8 @@ connection.onCompletion(
 			"y-axis", 
 			"style", 
 			"title", 
-			"anchor"
+			"anchor", 
+			"ecosystem"
 		]
 
 		let rawVariables :string[] = [];
@@ -227,7 +228,7 @@ connection.onCompletion(
 			}
 		}
 
-		const willResultInVariable = ["component", "submap", "market", "anchor"];
+		const willResultInVariable = ["component", "submap", "market", "anchor", "ecosystem"];
 
 		lines.forEach( line => 
 			willResultInVariable.forEach( start => 

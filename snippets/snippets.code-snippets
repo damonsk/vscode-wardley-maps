@@ -89,4 +89,8 @@
         "body": "note ${1:note text} [${2:0.9}, ${3:0.1}]",
         "description": "Generic note"
     },
+    "Pipeline": {
+        "prefix": "pipeline", 
+        "body": "pipeline ${1:Automation} [${2:0.15}, ${3:0.75}]"
+    }
 }
