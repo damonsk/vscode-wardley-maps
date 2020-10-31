@@ -42,11 +42,3 @@ Added in intellisense/auto completions, snippets and improved code highlighting.
 Initial release of Wardley Maps.
 
 **Enjoy!**
-
----
-
-## Developing this extension
-
-This extension requires a package (`wmlandscape`) to generated from <https://github.com/damonsk/onlinewardleymaps>
-
-    yarn package
