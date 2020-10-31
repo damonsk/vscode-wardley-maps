@@ -3,7 +3,7 @@ import { hot } from 'react-hot-loader/root';
 import { MapView, MapStyles, Defaults } from 'wmlandscape';
 import { Converter } from 'wmlandscape';
 
-const App = (_) => {
+const App = () => {
 	const [mapText, setMapText] = useState('');
 	const [mapTitle, setMapTitle] = useState('Untitled Map');
 	const [mapComponents, setMapComponents] = useState([]);
@@ -33,21 +33,15 @@ const App = (_) => {
 	const [mapStyle, setMapStyle] = useState('plain');
 	const [mapYAxis, setMapYAxis] = useState({});
 	const [mapStyleDefs, setMapStyleDefs] = useState(MapStyles.Plain);
-	const [saveOutstanding, setSaveOutstanding] = useState(false);
-	const [toggleToolbar, setToggleToolbar] = useState(true);
-
 	const [highlightLine, setHighlightLine] = useState(0);
 	const mapRef = useRef(null);
-	const [mainViewHeight, setMainViewHeight] = useState(100);
 
 	const mutateMapTextIn = (newText) => {
 		setMapText(newText);
-		console.log('mutateMapTextIn');
 	};
 
 	const mutateMapText = (newText) => {
 		setMapText(newText);
-		console.log('mutateMapText');
 		window.postMessage({ command: 'updateText', val: newText });
 	};
 
@@ -70,15 +64,20 @@ const App = (_) => {
 		};
 	}
 
+	const launchUrl = (urlId) => {
+		if (mapUrls.find((u) => u.name === urlId)) {
+			const urlToLaunch = mapUrls.find((u) => u.name === urlId).url;
+			window.open(urlToLaunch);
+		}
+	};
+
 	React.useEffect(() => {
 		const debouncedHandleResize = debounce(() => {
 			setMapDimensions({ width: getWidth(), height: getHeight() });
-			setMainViewHeight(105 + getHeight());
 		}, 1000);
 
 		const initialLoad = () => {
 			setMapDimensions({ width: getWidth(), height: getHeight() });
-			setMainViewHeight(105 + getHeight());
 		};
 
 		window.addEventListener('resize', debouncedHandleResize);
@@ -122,11 +121,14 @@ const App = (_) => {
 	}, [mapText]);
 
 	useEffect(() => {
+		window.postMessage({ command: 'highlightLine', val: highlightLine });
+	}, [highlightLine]);
+
+	useEffect(() => {
 		const textChangeBinding = (e) => {
 			const message = e.data;
 			switch (message.command) {
 				case 'text':
-					console.log('message', message);
 					mutateMapTextIn(message.val);
 					break;
 			}
@@ -167,7 +169,7 @@ const App = (_) => {
 					mapAnchors={mapAnchors}
 					mapLinks={mapLinks}
 					mapAttitudes={mapAttitudes}
-					launchUrl={() => console.log('launchUrl not implemented')}
+					launchUrl={launchUrl}
 					mapNotes={mapNotes}
 					mapAnnotations={mapAnnotations}
 					mapAnnotationsPresentation={mapAnnotationsPresentation}
