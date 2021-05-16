@@ -22,8 +22,13 @@
 		"prettier/react"
 	],
 	"rules": {
-		"prettier/prettier": "error",
-		"linebreak-style": ["error", "unix"],
+		"prettier/prettier": [
+				"error",
+				{
+						"endOfLine": "auto"
+				}
+		],
+		"linebreak-style": 0,
 		"react/prop-types": 0
 	}
 }
