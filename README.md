@@ -27,6 +27,9 @@ Auto completions and snippets accessible by pressing <kbd>CTRL</kbd>+<kbd>Space<
 
 To understand the capabilities and features available from this extension, clone the following repository which contains example maps - <https://github.com/damonsk/wardley-maps-examples>
 
+## Usage
+A list of all commands can be found [here](./usage.md)
+
 ## Known Issues
 
 Only one map can be rendered at any given time, we'll look to address with future release.
