@@ -42,7 +42,7 @@ market Cup of Tea [0.9, 0.5] inertia
 ------------------------
 ## To evolve a component
 ```
-evole Name (X Axis)
+evolve Name (X Axis)
 ```
 **Example:**
 ```
