@@ -8,13 +8,13 @@ import {
 	LanguageClientOptions,
 	ServerOptions,
 	TransportKind
-} from 'vscode-languageclient';
+} from 'vscode-languageclient/node';
 
 let client: LanguageClient;
 
 function randomInt(max) {
 	return Math.floor(Math.random() * Math.floor(max));
-  }
+}
 
 const errorOnRandomLine = (d, doc) => {
     const line = doc.lineAt(randomInt(doc.lineCount));
