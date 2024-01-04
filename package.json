@@ -101,7 +101,8 @@
 		"watch:ext": "tsc -b -w",
 		"precommit": "lint-staged",
 		"lint": "eslint src/",
-		"prettify": "pretty-quick"
+		"prettify": "pretty-quick",
+		"test": "vscode-test"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.23.6",
@@ -113,7 +114,6 @@
 		"@types/glob": "^7.1.3",
 		"@types/mocha": "^8.0.0",
 		"@types/node": "20.10.5",
-		"@types/react": "18.2.45",
 		"@types/vscode": "^1.50.0",
 		"babel-plugin-require-context-hook": "^1.0.0",
 		"eslint-config-prettier": "^9.1.0",
@@ -121,7 +121,7 @@
 		"eslint-plugin-prettier": "^5.1.2",
 		"eslint-plugin-react-hooks": "^4.2.0",
 		"eslint-plugin-react": "^7.33.2",
-		"eslint": "^8.56.0",
+
 		"glob": "^7.1.6",
 		"husky": "^8.0.3",
 		"lint-staged": "^15.2.0",
