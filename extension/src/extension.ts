@@ -12,20 +12,6 @@ import {
 
 let client: LanguageClient;
 
-// function randomInt(max) {
-// 	return Math.floor(Math.random() * Math.floor(max));
-// }
-
-const errorOnRandomLine = (d, doc) => {
-	// const line = doc.lineAt(randomInt(doc.lineCount));
-	// const diag = new vscode.Diagnostic(
-	// 	line.range,
-	// 	'random error',
-	// 	vscode.DiagnosticSeverity.Error
-	// );
-	//d.set(doc.uri,[diag])
-};
-
 function activate(context) {
 	let panel;
 	console.log(
@@ -40,7 +26,6 @@ function activate(context) {
 	context.subscriptions.push(
 		config_errors,
 		vscode.workspace.onDidChangeTextDocument((x) => {
-			errorOnRandomLine(config_errors, x.document);
 			if (panel !== undefined) {
 				panel.postMessage(x.document.getText());
 			}
@@ -54,7 +39,7 @@ function activate(context) {
 				const editor = vscode.window.activeTextEditor;
 				if (editor !== undefined) {
 					console.log(
-						'vscode-wardley-maps.helloWorld' + editor.document.fileName
+						'vscode-wardley-maps.helloWorld -- ' + editor.document.fileName
 					);
 					panel = new ViewLoader(context, editor);
 					panel.postMessage(editor.document.getText());
@@ -67,7 +52,10 @@ function activate(context) {
 	context.subscriptions.push(
 		vscode.window.onDidChangeActiveTextEditor(function (editor) {
 			if (editor !== undefined) {
-				console.log('onDidChangeActiveTextEditor' + editor.document.fileName);
+				console.log(
+					'vscode-wardley-maps.onDidChangeActiveTextEditor -- ' +
+						editor.document.fileName
+				);
 				panel.postMessage(editor.document.getText());
 				panel.setActiveEditor(editor);
 			}
