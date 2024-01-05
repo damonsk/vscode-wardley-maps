@@ -13,8 +13,7 @@
 			"args": [
 				"--extensionDevelopmentPath=${workspaceFolder}"
 			],
-			"outFiles": ["${workspaceRoot}/extension/out/**/*.js"],
-			"sourceMaps": true
+			"outFiles": ["${workspaceRoot}/extension/out/**/*.js"]
 		},
 		{
 			"type": "node",

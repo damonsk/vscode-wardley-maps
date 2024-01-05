@@ -118,16 +118,9 @@ class ViewLoader {
         </head>
         <body>
           <span>hi</span>
-		  <textarea id="debugConsole">
-			Debug Console lol
-		  </textarea>
-
-		  </textarea>
-		  <button onclick="document.getElementById('debugConsole').value += '\nYou clicked the button!'">Click me</button>
 
 			<script nonce="${nonce}">
 				console.log('[viewLoader.js/getWebviewContent] Script **BEFORE** our script refs');
-				document.getElementById('debugConsole').value += '\n[viewLoader.js/getWebviewContent] Script **BEFORE** our script refs';
 			</script>
 
           <div id="root"></div>
@@ -135,7 +128,6 @@ class ViewLoader {
 
 		  <script nonce="${nonce}">
 			console.log('[viewLoader.js/getWebviewContent] Script **AFTER** our script refs');
-			document.getElementById('debugConsole').value += '\n[viewLoader.js/getWebviewContent] Script **AFTER** our script refs';
 		  </script>
 
           <script nonce="${nonce}">
