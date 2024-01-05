@@ -27,6 +27,11 @@
         "body": "${1:startElement}->${2:endElement}",
         "description": "Link two components in the value chain"
     },
+    "LinkWithText": {
+        "prefix": "link-with-text",
+        "body": "${1:FromComponent}->${2:ToComponent}; ${3:Text}",
+        "description": "Link two components in the value chain with a text label"
+    },
     "PST": {
         "prefix": "pst",
         "body": "${1|pioneers,settlers,townplanners|} [${2:0.9}, ${3:0.1}, ${4:0.6}, ${5:0.8}]",
