@@ -24,7 +24,7 @@
     },
     "Link Components": {
         "prefix": "link",
-        "body": "${1:startElement}->${2:endElement}",
+        "body": "${1:FromComponent}->${2:ToComponent}",
         "description": "Link two components in the value chain"
     },
     "LinkWithText": {
