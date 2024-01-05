@@ -120,7 +120,7 @@
             "{"
                 "\tcomponent ${6:Wind} [${7:0.72}]"
                 "\tcomponent ${8:Batteries} [${9:0.58}] "
-                "\tevolve ${8:Batteries} [${10:0.65}]"
+                "\tevolve ${8:Batteries} ${10:0.65}"
                 "\tcomponent ${11:Nuclear} [${12:0.77}]"
             "}"            
         ],
