@@ -52,10 +52,18 @@
         "body": "${1|build,buy,outsource|} ${2:component}",
         "description": "Set components method - build/buy/outsource"
     },
-    "Evolving": {
+    "Evolution": {
         "prefix": "evolve",
         "body": "evolve ${1:foo} ${2:0.9}",
         "description": "Evolve a components maturity"
+    },
+    "EvolutionWithNewComponent": {
+        "prefix": "evolve-to-component",
+        "body": [
+            "component ${1:FromComponent}",
+            "evolve ${1:FromComponent}->${2:ToComponent} ${3:0.9}"
+        ],
+        "description": "Evolve a component's to a new component"
     },
     "XAxis": {
         "prefix": "x-axis",
@@ -73,24 +81,44 @@
         "description": "Change label position"
     },
     "Annotation": {
-        "prefix": "annotation",
+        "prefix": "annotation-single",
         "body": [
             "annotation ${1:1} [${2:0.9}, ${3:0.1}] ${4:summary}",
         ],
-        "description": "Annoation"
+        "description": "Creates an numbered annotation reference on the map with a summary"
     },
     "AnnotationMultiple": {
-        "prefix": "annotation",
+        "prefix": "annotation-multi",
         "body": "annotation ${1:1} [[${2:0.9}, ${3:0.1}], [${4:0.8}, ${5:0.1}]] ${6:summary}",
-        "description": "Multiple annoations"
+        "description": "Creates multiple annotations on the map with the same number and summary"
+    },
+    "AnnotationsLegend": {
+        "prefix": "annotations-legend",
+        "body": "annotations [${1:0.69}, ${2:0.02}]",
+        "description": "Tells the map where to render the list of annotation summaries"
     },
     "Note": {
         "prefix": "note",
         "body": "note ${1:note text} [${2:0.9}, ${3:0.1}]",
         "description": "Generic note"
     },
-    "Pipeline": {
+    "PipelineV1": {
         "prefix": "pipeline", 
-        "body": "pipeline ${1:Automation} [${2:0.15}, ${3:0.75}]"
-    }
+        "body": "pipeline ${1:Automation} [${2:0.15}, ${3:0.75}]",
+        "description": "Creates a simple pipeline entry"
+    },
+    "PipelineV2Block": {
+        "prefix": "pipeline-block",
+        "body": [
+            "component ${1:Power} [${2:0.21}, ${3:0.67}]"
+            "pipeline ${1:Power} [${4:0.1},${5:0.1}]"
+            "{"
+                "\tcomponent ${6:Wind} [${7:0.72}]"
+                "\tcomponent ${8:Batteries} [${9:0.58}] "
+                "\tevolve ${8:Batteries} [${10:0.65}]"
+                "\tcomponent ${11:Nuclear} [${12:0.77}]"
+            "}"            
+        ],
+        "description": "Creates a component and matching pipeline with several sub-components"
+    },
 }
