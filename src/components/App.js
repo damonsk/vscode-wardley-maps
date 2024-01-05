@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { hot } from 'react-hot-loader/root';
+// import { hot } from 'react-hot-loader/root';
 import { MapView, MapStyles, Defaults } from 'wmlandscape';
 import { Converter } from 'wmlandscape';
 import { ModKeyPressedProvider } from 'wmlandscape';
@@ -193,6 +193,8 @@ const App = () => {
 		}
 	}, [mapStyle]);
 
+	console.log('[App.js] Returning main App React.Fragment');
+
 	return (
 		<React.Fragment>
 			<div>
@@ -271,4 +273,5 @@ const App = () => {
 	);
 };
 
-export default hot(App);
+//export default hot(App);
+export default App;

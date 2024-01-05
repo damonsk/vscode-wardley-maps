@@ -23,7 +23,9 @@ class ViewLoader {
 			(message) => {
 				switch (message.command) {
 					case 'updateText':
+						// eslint-disable-next-line no-case-declarations
 						const textEditor = this._editor;
+
 						var firstLine = textEditor.document.lineAt(0);
 						var lastLine = textEditor.document.lineAt(
 							textEditor.document.lineCount - 1
@@ -79,14 +81,27 @@ class ViewLoader {
 		let scriptsToInclude = scripts.map((p) => this.buildUri(p));
 		let stylesToInclude = this.buildUri(styles);
 		const nonce = this.getNonce();
-		let scriptText = '';
-		scriptText =
-			scriptText += `<link rel="stylesheet" nonce="${nonce}" href="${stylesToInclude}">`;
+		let scriptText = `<link rel="stylesheet" nonce="${nonce}-css" href="${stylesToInclude}">\n`;
+
+		console.log(
+			'[viewLoader.js] Found ' + scriptsToInclude.length + ' scripts to include'
+		);
+
 		for (let index = 0; index < scriptsToInclude.length; index++) {
 			let element = scriptsToInclude[index];
-			scriptText =
-				scriptText += `<script nonce="${nonce}" src="${element}"></script>`;
+
+			if (element.toString().endsWith('.js')) {
+				console.log('[viewLoader.js] Adding script ' + element);
+				scriptText += `<script nonce="${nonce}-${element}" src="${element}"></script>\n`;
+			} else {
+				console.log(
+					"[viewLoader.js] Didn't add " + element + " because it's not JS"
+				);
+			}
 		}
+
+		console.log('[viewLoader.js] scripts to load = \n' + scriptText);
+		console.log('[viewLoader.js] Returning base HTML');
 
 		return `<!DOCTYPE html>
         <html lang="en">
@@ -102,10 +117,20 @@ class ViewLoader {
 					).with({ scheme: 'vscode-resource' })}/">
         </head>
         <body>
+          <span>hi</span>
+
+			<script nonce="${nonce}-1">
+				console.log('[viewLoader.js/getWebviewContent] Script **BEFORE** our script refs');
+			</script>
+
           <div id="root"></div>
           ${scriptText}
 
-          <script nonce=${nonce}>
+		  <script nonce="${nonce}-2">
+			console.log('[viewLoader.js/getWebviewContent] Script **AFTER** our script refs');
+		  </script>
+
+          <script nonce="${nonce}-3">
             (function() {
                 const vscode = acquireVsCodeApi();
                 const textChangeBinding = (e) => {

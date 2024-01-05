@@ -39,10 +39,16 @@ function activate(context) {
 				const editor = vscode.window.activeTextEditor;
 				if (editor !== undefined) {
 					console.log(
-						'vscode-wardley-maps.helloWorld -- ' + editor.document.fileName
+						'[extension.ts] vscode-wardley-maps.helloWorld -- ' +
+							editor.document.fileName
 					);
+
 					panel = new ViewLoader(context, editor);
 					panel.postMessage(editor.document.getText());
+
+					console.log(
+						'[extension.ts] setting active editor' + editor.document.fileName
+					);
 					panel.setActiveEditor(editor);
 				}
 			}

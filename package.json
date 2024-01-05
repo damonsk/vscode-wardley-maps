@@ -140,24 +140,25 @@
 		"yarn-run-all": "^3.1.1"
 	},
 	"dependencies": {
+		"@emotion/react": "^11.11.3",
+		"@emotion/styled": "^11.11.0",
+		"@mui/icons-material": "^5.15.2",
+		"@mui/material": "5.15.2",
+		"@mui/styles": "5.15.2",
 		"bootstrap": "^4.5.3",
 		"core-js": "^3.34.0",
 		"lodash.merge": "^4.6.2",
 		"prop-types": "^15.8.1",
-		"react": "^17.0.1",
 		"react-bootstrap": "^1.4.0",
-		"react-dom": "^18.2.0",
+		"react-dom": "18.2.0",
 		"react-icons": "^3.11.0",
+		"react": "18.2.0",
+		"styled-components": "6.1.5",
 		"vscode-languageclient": "9.0.1",
-		"vscode-languageserver": "9.0.1",
 		"vscode-languageserver-protocol": "3.17.5",
 		"vscode-languageserver-textdocument": "1.0.11",
-		"wmlandscape": "^1.371.0",
-		"@mui/material": "5.15.2",
-		"@mui/styles": "5.15.2",
-		"@mui/icons-material": "^5.15.2",
-		"@emotion/react": "^11.11.3",
-		"@emotion/styled": "^11.11.0"
+		"vscode-languageserver": "9.0.1",
+		"wmlandscape": "^1.371.0"
 	},
 	"browserslist": {
 		"production": [
