@@ -126,4 +126,14 @@
         ],
         "description": "Creates a component and matching pipeline with several sub-components"
     },
+    "Accelerator": {
+        "prefix": "accelerator",
+        "body": "accelerator ${1:AcceleratorName} [${2:0.9}, ${3:0.1}]",
+        "description": "Accelerator"
+    },
+    "Deaccelerator": {
+        "prefix": "deaccelerator",
+        "body": "deaccelerator ${1:DeacceleratorName} [${2:0.9}, ${3:0.1}]",
+        "description": "Deaccelerator"
+    }
 }
