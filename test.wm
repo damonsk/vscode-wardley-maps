@@ -1,50 +1,85 @@
-title Campfire Coffee Shop
-anchor Business [0.95, 0.63]
-anchor Public [0.95, 0.78]
-component Cup of Coffee [0.79, 0.61] label [-96, 3]
-component Cup [0.73, 0.78]
-component Coffee [0.63, 0.81]
-component Hot Water [0.52, 0.80]
-component Water [0.38, 0.82]
-component Kettle [0.45, 0.57] label [-33, -16]
-pipeline Kettle
-{
-  component Campfire Kettle [0.50] label [-29, 28]
-  component Electric Kettle [0.63] label [-30, 25]
-}
+title Golden Master
+note A Map that contains all possible elements on a map. [0.97, 0.01]
+evolution one->two->three->four
 
-component Power [0.26, 0.80] label [-7, -15]
-pipeline Power
-{
-  component Nuclear [0.81] label [-17, 35]
-  component Solar [0.73] label [-20, 35]
-  component Coal [0.88] label [-13, 35]
-}
+component FooWithNoCoords
+component FooWithCoords [0.91, 0.23] label [15, 4]
 
-component Campfire [0.35, 0.30] label [-52, -10]
-component Wood [0.10, 0.80] label [7, -7]
-component Flint & Steel [0.19, 0.45] label [-16, 21]
-component Trees [0.04, 0.82] label [10, -9]
-component Areopress [0.68, 0.51] label [-69, 5]
+//Methods
+//Build
+component BuildComponent [0.70, 0.09] 
+build BuildComponent
+//Buy
+component BuyComponent [0.59, 0.09] 
+buy BuyComponent
+//Outsource
+component OutsourceComponent [0.51, 0.09] label [37, -23]
+outsource OutsourceComponent
+//End Methods
 
-Business->Cup of Coffee
-Public->Cup of Coffee
-Cup of Coffee->Cup
-Cup of Coffee->Coffee
-Cup of Coffee->Hot Water
-Hot Water->Water
-Hot Water->Kettle; limited by 
-Electric Kettle->Power
-Wood->Campfire
-Flint & Steel->Campfire
-Campfire Kettle->Campfire
-Wood->Trees
-Cup of Coffee->Areopress
-
-annotation 1 [[0.51,0.62],[0.29,0.86] ] Standardising power allows Kettles to evolve faster
-annotation 2 [0.48, 0.85] Hot water is obvious and well known
-annotations [0.68, 0.02]
-
-note campfires give customers a warm feeling [0.41, 0.15]
-
+//Styles
+style colour
 style wardley
+style dark
+style handwritten
+style plain
+//EndStyles
+
+//Annotations
+annotation 1 [[0.85,0.64],[0.85,0.68] ] Standardising power allows Kettles to evolve faster
+annotation 2 [0.78, 0.64] Hot water is obvious and well known
+annotations [0.97, 0.64]
+//EndAnnotations
+
+//PST
+// PST Legend Top Right
+pioneers [0.74, 0.83, 0.68, 0.98]
+settlers [0.88, 0.83, 0.82, 0.98] 
+townplanners [0.81, 0.83, 0.75, 0.98]
+//EndPST
+
+//Eco
+ecosystem EcoSystemNoCoords
+ecosystem EcoSystemWithCoords [0.1,0.9] label [-9, -41]
+//EndEco
+
+//Market
+market MarketNoCoords
+market MarketWithCoords [0.3,0.9] label [-21, 18]
+//EndMarket
+
+//Evolve 
+component EvolveComponennt [0.07, 0.27] label [-56, -23] 
+evolve EvolveComponennt 0.7 label [5, -23]
+//EndEvolve
+
+//Inertia 
+component InertiaComponent [0.20, 0.22] inertia label [-97, -9]
+component Inertia Alternative [0.15, 0.22] (inertia) label [-74, -18]
+//EndInertia 
+
+//Pipelines (Legacy)
+component foo [0.73, 0.32] label [13, -10]
+pipeline foo [0.24, 0.39]
+//EndPipelines 
+
+//Pipelines V2
+component Power [0.21, 0.67] label [11, -13]
+pipeline Power [0.1,0.1]
+{
+component Wind [0.72] label [-13.00, 35.00]
+component Batteries [0.58] label [-28.00, 35.00] 
+evolve Batteries 0.65 label [-46, -20]
+component Nuclear [0.77] label [-15.00, 36.00]
+}
+//EndPipelinesV2
+
+//SubMap
+submap Website [0.83, 0.50] url(submapUrl)
+url submapUrl [https://onlinewardleymaps.com/#clone:qu4VDDQryoZEnuw0ZZ]
+//EndSupMap
+
+FooWithCoords->InertiaComponent; Constraint
+
+accelerator foobar1 [0.2, 0.6]
+deaccelerator foobar33 [0.2, 0.6]
