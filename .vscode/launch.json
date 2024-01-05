@@ -14,6 +14,7 @@
 				"--extensionDevelopmentPath=${workspaceFolder}"
 			],
 			"outFiles": ["${workspaceRoot}/extension/out/**/*.js"],
+			"sourceMaps": true
 		},
 		{
 			"type": "node",

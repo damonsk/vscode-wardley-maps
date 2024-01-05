@@ -81,7 +81,7 @@ class ViewLoader {
 		let scriptsToInclude = scripts.map((p) => this.buildUri(p));
 		let stylesToInclude = this.buildUri(styles);
 		const nonce = this.getNonce();
-		let scriptText = `<link rel="stylesheet" nonce="${nonce}-css" href="${stylesToInclude}">\n`;
+		let scriptText = `<link rel="stylesheet" nonce="${nonce}" href="${stylesToInclude}">\n`;
 
 		console.log(
 			'[viewLoader.js] Found ' + scriptsToInclude.length + ' scripts to include'
@@ -92,7 +92,7 @@ class ViewLoader {
 
 			if (element.toString().endsWith('.js')) {
 				console.log('[viewLoader.js] Adding script ' + element);
-				scriptText += `<script nonce="${nonce}-${element}" src="${element}"></script>\n`;
+				scriptText += `<script nonce="${nonce}" src="${element}"></script>\n`;
 			} else {
 				console.log(
 					"[viewLoader.js] Didn't add " + element + " because it's not JS"
@@ -118,19 +118,27 @@ class ViewLoader {
         </head>
         <body>
           <span>hi</span>
+		  <textarea id="debugConsole">
+			Debug Console lol
+		  </textarea>
 
-			<script nonce="${nonce}-1">
+		  </textarea>
+		  <button onclick="document.getElementById('debugConsole').value += '\nYou clicked the button!'">Click me</button>
+
+			<script nonce="${nonce}">
 				console.log('[viewLoader.js/getWebviewContent] Script **BEFORE** our script refs');
+				document.getElementById('debugConsole').value += '\n[viewLoader.js/getWebviewContent] Script **BEFORE** our script refs';
 			</script>
 
           <div id="root"></div>
           ${scriptText}
 
-		  <script nonce="${nonce}-2">
+		  <script nonce="${nonce}">
 			console.log('[viewLoader.js/getWebviewContent] Script **AFTER** our script refs');
+			document.getElementById('debugConsole').value += '\n[viewLoader.js/getWebviewContent] Script **AFTER** our script refs';
 		  </script>
 
-          <script nonce="${nonce}-3">
+          <script nonce="${nonce}">
             (function() {
                 const vscode = acquireVsCodeApi();
                 const textChangeBinding = (e) => {
