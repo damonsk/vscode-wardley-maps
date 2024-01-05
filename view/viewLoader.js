@@ -83,25 +83,13 @@ class ViewLoader {
 		const nonce = this.getNonce();
 		let scriptText = `<link rel="stylesheet" nonce="${nonce}" href="${stylesToInclude}">\n`;
 
-		console.log(
-			'[viewLoader.js] Found ' + scriptsToInclude.length + ' scripts to include'
-		);
-
 		for (let index = 0; index < scriptsToInclude.length; index++) {
 			let element = scriptsToInclude[index];
 
 			if (element.toString().endsWith('.js')) {
-				console.log('[viewLoader.js] Adding script ' + element);
 				scriptText += `<script nonce="${nonce}" src="${element}"></script>\n`;
-			} else {
-				console.log(
-					"[viewLoader.js] Didn't add " + element + " because it's not JS"
-				);
 			}
 		}
-
-		console.log('[viewLoader.js] scripts to load = \n' + scriptText);
-		console.log('[viewLoader.js] Returning base HTML');
 
 		return `<!DOCTYPE html>
         <html lang="en">
@@ -117,18 +105,8 @@ class ViewLoader {
 					).with({ scheme: 'vscode-resource' })}/">
         </head>
         <body>
-          <span>hi</span>
-
-			<script nonce="${nonce}">
-				console.log('[viewLoader.js/getWebviewContent] Script **BEFORE** our script refs');
-			</script>
-
           <div id="root"></div>
           ${scriptText}
-
-		  <script nonce="${nonce}">
-			console.log('[viewLoader.js/getWebviewContent] Script **AFTER** our script refs');
-		  </script>
 
           <script nonce="${nonce}">
             (function() {

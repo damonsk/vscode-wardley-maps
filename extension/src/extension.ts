@@ -46,9 +46,6 @@ function activate(context) {
 					panel = new ViewLoader(context, editor);
 					panel.postMessage(editor.document.getText());
 
-					console.log(
-						'[extension.ts] setting active editor' + editor.document.fileName
-					);
 					panel.setActiveEditor(editor);
 				}
 			}

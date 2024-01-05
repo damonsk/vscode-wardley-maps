@@ -195,8 +195,6 @@ const App = () => {
 		}
 	}, [mapStyle]);
 
-	console.log('[App.js] Returning main App React.Fragment');
-
 	return (
 		<React.Fragment>
 			<div>
