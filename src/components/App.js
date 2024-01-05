@@ -19,6 +19,7 @@ const App = () => {
 	const [mapLinks, setMapLinks] = useState([]);
 	const [mapAttitudes, setMapAttitudes] = useState([]);
 	const [mapAnnotations, setMapAnnotations] = useState([]);
+	const [mapAccelerators, setMapAccelerators] = useState([]);
 	const [mapMethods, setMapMethods] = useState([]);
 	const [mapAnnotationsPresentation, setMapAnnotationsPresentation] = useState(
 		[]
@@ -145,6 +146,7 @@ const App = () => {
 			setMapMethods(r.methods);
 			setMapAttitudes(r.attitudes);
 			setMapStyle(r.presentation.style);
+			setMapAccelerators(r.accelerators);
 			setMapYAxis(r.presentation.yAxis);
 			setMapAnnotationsPresentation(r.presentation.annotations);
 			setMapEvolutionStates({
@@ -210,6 +212,7 @@ const App = () => {
 						mapAnchors={mapAnchors}
 						mapLinks={mapLinks}
 						mapAttitudes={mapAttitudes}
+						mapAccelerators={mapAccelerators}
 						launchUrl={launchUrl}
 						mapNotes={mapNotes}
 						mapAnnotations={mapAnnotations}
