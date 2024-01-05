@@ -57,7 +57,7 @@ function activate(context) {
 
 	context.subscriptions.push(
 		vscode.window.onDidChangeActiveTextEditor(function (editor) {
-			if (editor !== undefined) {
+			if (editor !== undefined && panel !== undefined) {
 				console.log(
 					'vscode-wardley-maps.onDidChangeActiveTextEditor -- ' +
 						editor.document.fileName
