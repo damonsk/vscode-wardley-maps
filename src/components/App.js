@@ -1,10 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
-// import { hot } from 'react-hot-loader/root';
 import { MapView, MapStyles, Defaults } from 'wmlandscape';
 import { Converter } from 'wmlandscape';
 import { ModKeyPressedProvider } from 'wmlandscape';
+import { FeatureSwitchesProvider } from 'wmlandscape';
+import { FeatureSwitches } from 'wmlandscape';
 
 const App = () => {
+	let vscodeFeatureSwitches = {
+		...FeatureSwitches.featureSwitches,
+		showToggleFullscreen: false,
+	};
+
+	console.log({ vscodeFeatureSwitches, ...FeatureSwitches.featureSwitches });
+
 	const [mapText, setMapText] = useState('');
 	const [mapTitle, setMapTitle] = useState('Untitled Map');
 	const [mapComponents, setMapComponents] = useState([]);
@@ -130,7 +138,7 @@ const App = () => {
 
 	React.useEffect(() => {
 		try {
-			var r = new Converter().parse(mapText);
+			var r = new Converter(vscodeFeatureSwitches).parse(mapText);
 			setMapTitle(r.title);
 			setMapAnnotations(r.annotations);
 			setMapAnchors(r.anchors);
@@ -198,38 +206,41 @@ const App = () => {
 	return (
 		<React.Fragment>
 			<div>
-				<ModKeyPressedProvider>
-					<MapView
-						mapTitle={mapTitle}
-						mapComponents={mapComponents}
-						mapMarkets={mapMarkets}
-						mapEcosystems={mapEcosystems}
-						mapSubMaps={mapSubMaps}
-						mapEvolved={mapEvolved}
-						mapPipelines={mapPipelines}
-						mapAnchors={mapAnchors}
-						mapLinks={mapLinks}
-						mapAttitudes={mapAttitudes}
-						mapAccelerators={mapAccelerators}
-						launchUrl={launchUrl}
-						mapNotes={mapNotes}
-						mapAnnotations={mapAnnotations}
-						mapAnnotationsPresentation={mapAnnotationsPresentation}
-						mapMethods={mapMethods}
-						mapStyleDefs={mapStyleDefs}
-						mapYAxis={mapYAxis}
-						mapDimensions={mapDimensions}
-						mapEvolutionStates={mapEvolutionStates}
-						mapRef={mapRef}
-						mapText={mapText}
-						mutateMapText={mutateMapText}
-						setMetaText={() => console.log('set meta text not implemented')}
-						metaText={() => console.log('meta text not implemented')}
-						evolutionOffsets={Defaults.EvoOffsets}
-						setHighlightLine={setHighlightLine}
-						setNewComponentContext={setNewComponentContext}
-					/>
-				</ModKeyPressedProvider>
+				<FeatureSwitchesProvider value={vscodeFeatureSwitches}>
+					<ModKeyPressedProvider>
+						<MapView
+							mapTitle={mapTitle}
+							mapComponents={mapComponents}
+							mapMarkets={mapMarkets}
+							mapEcosystems={mapEcosystems}
+							mapSubMaps={mapSubMaps}
+							mapEvolved={mapEvolved}
+							mapPipelines={mapPipelines}
+							mapAnchors={mapAnchors}
+							mapLinks={mapLinks}
+							mapAttitudes={mapAttitudes}
+							mapAccelerators={mapAccelerators}
+							launchUrl={launchUrl}
+							mapNotes={mapNotes}
+							mapAnnotations={mapAnnotations}
+							mapAnnotationsPresentation={mapAnnotationsPresentation}
+							mapMethods={mapMethods}
+							mapStyleDefs={mapStyleDefs}
+							mapYAxis={mapYAxis}
+							mapDimensions={mapDimensions}
+							mapEvolutionStates={mapEvolutionStates}
+							mapRef={mapRef}
+							mapText={mapText}
+							mutateMapText={mutateMapText}
+							setMetaText={() => console.log('set meta text not implemented')}
+							metaText={() => console.log('meta text not implemented')}
+							evolutionOffsets={Defaults.EvoOffsets}
+							setHighlightLine={setHighlightLine}
+							setNewComponentContext={setNewComponentContext}
+						/>
+					</ModKeyPressedProvider>
+				</FeatureSwitchesProvider>
+
 				{showAdd ? (
 					<>
 						<div id="create-element">

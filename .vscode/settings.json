@@ -1,0 +1,15 @@
+{
+    "editor.insertSpaces": false,
+      "typescript.tsc.autoDetect": "off",
+      "typescript.preferences.quoteStyle": "single",
+      "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit"
+      },
+    "eslint.lintTask.enable": true,
+    "eslint.run": "onSave",
+    "eslint.workingDirectories": [
+      "/extension",
+      "/server",
+      "/src",
+    ]
+  }
