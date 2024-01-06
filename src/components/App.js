@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { hot } from 'react-hot-loader/root';
+// import { hot } from 'react-hot-loader/root';
 import { MapView, MapStyles, Defaults } from 'wmlandscape';
 import { Converter } from 'wmlandscape';
 import { ModKeyPressedProvider } from 'wmlandscape';
@@ -19,6 +19,7 @@ const App = () => {
 	const [mapLinks, setMapLinks] = useState([]);
 	const [mapAttitudes, setMapAttitudes] = useState([]);
 	const [mapAnnotations, setMapAnnotations] = useState([]);
+	const [mapAccelerators, setMapAccelerators] = useState([]);
 	const [mapMethods, setMapMethods] = useState([]);
 	const [mapAnnotationsPresentation, setMapAnnotationsPresentation] = useState(
 		[]
@@ -145,6 +146,7 @@ const App = () => {
 			setMapMethods(r.methods);
 			setMapAttitudes(r.attitudes);
 			setMapStyle(r.presentation.style);
+			setMapAccelerators(r.accelerators);
 			setMapYAxis(r.presentation.yAxis);
 			setMapAnnotationsPresentation(r.presentation.annotations);
 			setMapEvolutionStates({
@@ -208,6 +210,7 @@ const App = () => {
 						mapAnchors={mapAnchors}
 						mapLinks={mapLinks}
 						mapAttitudes={mapAttitudes}
+						mapAccelerators={mapAccelerators}
 						launchUrl={launchUrl}
 						mapNotes={mapNotes}
 						mapAnnotations={mapAnnotations}
@@ -271,4 +274,5 @@ const App = () => {
 	);
 };
 
-export default hot(App);
+//export default hot(App);
+export default App;

@@ -13,7 +13,7 @@
 		"keywords": {
 			"patterns": [
 				{
-					"match": "(evolution|note|anchor|annotations|annotation|component|market|submap|title|style|outsource|build|product|buy|pipeline|ecosystem)(\\s*[-+\\'\";a-zA-Z0-9\\s*]+)",
+					"match": "(accelerator|deaccelerator|evolution|note|anchor|annotations|annotation|component|market|submap|title|style|outsource|build|product|buy|pipeline|ecosystem)(\\s*[-+\\'\";a-zA-Z0-9\\s*]+)",
 					"captures": {
 						"1": {
 							"name": "storage.type"
@@ -88,8 +88,28 @@
 						"name": "constant.numeric.skinparam.keyword.source.wardleymap"
 					  }
 					}
-				  },
-				  {
+				},
+				{
+					"match": "(evolve)(\\s*[a-zA-Z0-9\\s*]+)(\\-\\>)?(\\s*[a-zA-Z0-9\\s*]+)?(\\d+(?:\\.\\d{1,})*)",
+					"captures": {
+					  "1": {
+						"name": "storage.type"
+					  },
+					  "2": {
+						  "name": "entity.name.function"
+					  },
+					  "3": {
+						"name": "keyword.operator.assignment.js"
+					  },
+					  "4": {
+						"name": "entity.name.function"
+					  },
+					  "5": {
+						"name": "constant.numeric.skinparam.keyword.source.wardleymap"
+					  }
+					}
+				},				  
+				{
 					"match": "(label)(\\s*\\[)(-*\\d+)(\\,\\s*)(-*\\d+)(\\])",
 					"captures": 
 					{
