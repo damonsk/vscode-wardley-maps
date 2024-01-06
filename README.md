@@ -34,7 +34,81 @@ A list of all commands can be found [here](./usage.md)
 
 Only one map can be rendered at any given time, we'll look to address with future release.
 
-## Release Notes
+# Release Notes
+
+## January 2023 Release
+
+Thank you to @Preskton (Preston Doster) for their contributions, bringing vscode-wardley-maps up to date with the latest OnlineWardleyMaps release.
+
+### Pipelines V2
+
+We’ve revamped the pipeline components to enhance the positioning of choice components. This improvement introduces a new syntax, detailed below.
+
+#### Key Highlights:
+
+**Improved Positioning**:
+
+Experience enhanced placement of choice components within your pipelines for a more streamlined and intuitive workflow.
+
+**New Syntax**:
+
+Explore the updated syntax that accompanies this change, providing you with a more expressive and efficient way to define your pipeline components.
+
+**Backward Compatibility**:
+
+Fear not! Both the new and old syntax will be supported, ensuring a smooth transition for all users.
+
+***Legacy syntax & view***
+
+The old syntax created a view which positioned two components at the given maturity.
+
+```
+pipeline Kettle [0.1, 0.9]
+Legacy Pipeline View
+```
+
+**Version 2 syntax & view**
+
+New version allows nested components which only require their maturity to be specified as they will inherit visibility position from the parent pipeline.
+
+```
+component Kettle [0.45, 0.57]
+pipeline Kettle
+{
+  component Campfire Kettle [0.50]
+  component Electric Kettle [0.63]
+}
+```
+
+### Annotate value chain links
+
+You can now specify additional context to links by using the optional operator. This will allow you to highlight which links are “limited by”, “constraint” or “feedback loop” without using notes. Example below.
+
+```
+Hot Water->Kettle; limited by 
+```
+
+## Evolve name changes
+
+It may be the case that the evolved component will need to represent something new.
+
+Like Physical Space to Virtual Space.
+
+You can now specify the new name of the evolved component using the syntax below. Virtual Space will be the new component name.
+
+```
+component Physical Space [0.91, 0.46]
+evolve Physical Space->Virtual Space 0.8
+```
+
+## Accelerator / Deaccelerator
+
+You can now include accelerator/deaccelerator ('An attempt to alter map') components.
+
+```
+accelerator AcceleratorName [0.9, 0.1]
+deaccelerator DeacceleratorName [0.80, 0.10]
+```
 
 ## May 2021 - (Version 1.0.12)
 
