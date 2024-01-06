@@ -69,7 +69,7 @@ class ViewLoader {
 	buildUri = function (p) {
 		const runtimePath = path.join(this._extensionPath, 'build', p);
 		const runtimePathOnDisk = vscode.Uri.file(runtimePath);
-		return runtimePathOnDisk.with({ scheme: 'vscode-resource' });
+		return this._panel.webview.asWebviewUri(runtimePathOnDisk);
 	};
 
 	getWebviewContent = function () {
