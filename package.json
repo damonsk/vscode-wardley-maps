@@ -24,7 +24,8 @@
 	},
 	"license": "SEE LICENSE IN LICENSE",
 	"activationEvents": [
-		"onCommand:vscode-wardley-maps.helloWorld",
+		"onCommand:vscode-wardley-maps.display-map",
+		"onCommand:vscode-wardley-maps.example-map",
 		"onLanguage:wardleymap"
 	],
 	"main": "./extension/out/extension.js",
@@ -54,8 +55,13 @@
 		},
 		"commands": [
 			{
-				"command": "vscode-wardley-maps.helloWorld",
+				"command": "vscode-wardley-maps.display-map",
 				"title": "Display Map",
+				"category": "Wardley Maps"
+			},
+			{
+				"command": "vscode-wardley-maps.example-map",
+				"title": "Example Map",
 				"category": "Wardley Maps"
 			}
 		],

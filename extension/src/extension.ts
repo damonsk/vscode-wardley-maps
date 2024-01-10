@@ -1,6 +1,6 @@
 const ViewLoader = require('../../view/viewLoader');
 const vscode = require('vscode');
-
+import * as wmlandscape from 'wmlandscape';
 import * as path from 'path';
 import { workspace } from 'vscode';
 import {
@@ -13,7 +13,7 @@ import {
 let client: LanguageClient;
 
 function activate(context) {
-	let panel;
+	let panelInstances = [];
 	console.log(
 		'Congratulations, your extension "' +
 			context.extension.packageJSON.name +
@@ -21,46 +21,104 @@ function activate(context) {
 	);
 
 	console.log('Version = ' + context.extension.packageJSON.version);
-
 	const config_errors = vscode.languages.createDiagnosticCollection();
 	context.subscriptions.push(
 		config_errors,
 		vscode.workspace.onDidChangeTextDocument((x) => {
-			if (panel !== undefined) {
-				panel.postMessage(x.document.getText());
+			try {
+				if (panelInstances[x.document.fileName] !== undefined) {
+					console.log(
+						'[[extension.ts::onDidChangeTextDocument]]',
+						x.document.fileName
+					);
+					panelInstances[x.document.fileName].postMessage(x.document.getText());
+				}
+			} catch (e) {
+				console.log('[[extension.ts::onDidChangeTextDocument::exception]]', e);
+			}
+		}),
+		vscode.workspace.onDidCloseTextDocument((t) => {
+			if (panelInstances[t.fileName] !== undefined) {
+				console.log('[[extension.ts::onDidCloseTextDocument]]', t.fileName);
+				panelInstances[t.fileName].dispose();
+				panelInstances = panelInstances.filter((it) => {
+					return it != t.fileName;
+				});
 			}
 		})
 	);
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand(
-			'vscode-wardley-maps.helloWorld',
+			'vscode-wardley-maps.display-map',
 			function () {
 				const editor = vscode.window.activeTextEditor;
 				if (editor !== undefined) {
 					console.log(
-						'[extension.ts] vscode-wardley-maps.helloWorld -- ' +
+						'[extension.ts] vscode-wardley-maps.display-map -- ' +
 							editor.document.fileName
 					);
 
-					panel = new ViewLoader(context, editor);
-					panel.postMessage(editor.document.getText());
-
-					panel.setActiveEditor(editor);
+					panelInstances[editor.document.fileName] = new ViewLoader(
+						context,
+						editor,
+						editor.document.fileName
+					);
+					panelInstances[editor.document.fileName].setActiveEditor(editor);
 				}
+			}
+		),
+		vscode.commands.registerCommand(
+			'vscode-wardley-maps.example-map',
+			async function () {
+				const document = await vscode.workspace.openTextDocument({
+					language: 'wardleymap',
+				});
+				const editor = await vscode.window.showTextDocument(document);
+
+				console.log(
+					'[extension.ts] vscode-wardley-maps.example-map -- ' +
+						editor.document.fileName
+				);
+
+				editor.edit((editBuilder) => {
+					editBuilder.insert(
+						new vscode.Position(0, 0),
+						wmlandscape.Defaults.ExampleMap
+					);
+				});
+
+				panelInstances[editor.document.fileName] = new ViewLoader(
+					context,
+					editor,
+					editor.document.fileName
+				);
+				panelInstances[editor.document.fileName].setActiveEditor(editor);
 			}
 		)
 	);
 
 	context.subscriptions.push(
 		vscode.window.onDidChangeActiveTextEditor(function (editor) {
-			if (editor !== undefined && panel !== undefined) {
-				console.log(
-					'vscode-wardley-maps.onDidChangeActiveTextEditor -- ' +
+			try {
+				if (
+					editor !== undefined &&
+					panelInstances[editor.document.fileName] !== undefined
+				) {
+					console.log(
+						'[[extension.ts::onDidChangeActiveTextEditor]]',
 						editor.document.fileName
+					);
+					panelInstances[editor.document.fileName].postMessage(
+						editor.document.getText()
+					);
+					panelInstances[editor.document.fileName].setActiveEditor(editor);
+				}
+			} catch (e) {
+				console.log(
+					'[[extension.ts::onDidChangeActiveTextEditor::exception]]',
+					e
 				);
-				panel.postMessage(editor.document.getText());
-				panel.setActiveEditor(editor);
 			}
 		})
 	);

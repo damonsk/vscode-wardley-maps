@@ -2,12 +2,13 @@ const vscode = require('vscode');
 const path = require('path');
 
 class ViewLoader {
-	constructor(context, editor) {
+	constructor(context, editor, filename) {
 		this._extensionPath = context.extensionPath;
 		this._editor = editor;
+		this._filename = filename;
 		this._panel = vscode.window.createWebviewPanel(
 			'mapView',
-			'Map View',
+			`Map View (${filename})`,
 			vscode.ViewColumn.Two,
 			{
 				enableScripts: true,
@@ -31,7 +32,6 @@ class ViewLoader {
 						this.postMessage(textEditor.document.getText());
 						break;
 					case 'updateText':
-						// eslint-disable-next-line no-case-declarations
 						var firstLine = textEditor.document.lineAt(0);
 						var lastLine = textEditor.document.lineAt(
 							textEditor.document.lineCount - 1
@@ -43,9 +43,18 @@ class ViewLoader {
 							lastLine.range.end.character
 						);
 
-						textEditor.edit((editBuilder) => {
-							editBuilder.replace(textRange, message.val);
-						});
+						// Bring the document back into focus
+						vscode.window
+							.showTextDocument(
+								textEditor.document,
+								vscode.ViewColumn.One,
+								false
+							)
+							.then((editor) => {
+								editor.edit((editBuilder) => {
+									editBuilder.replace(textRange, message.val);
+								});
+							});
 						return;
 				}
 			},
@@ -54,8 +63,13 @@ class ViewLoader {
 		);
 	}
 
+	dispose = function () {
+		console.log('[[viewLoader.js::dispose]]', this._filename);
+		this._panel.dispose();
+	};
+
 	postMessage = function (message) {
-		console.log('[[viewLoader.js::postMessage]]', message);
+		console.log('[[viewLoader.js::postMessage]]', this._filename, message);
 		this._panel.webview.postMessage({ command: 'text', val: message });
 	};
 
