@@ -21,11 +21,17 @@ class ViewLoader {
 		// Handle messages from the webview
 		this._panel.webview.onDidReceiveMessage(
 			(message) => {
+				const textEditor = this._editor;
 				switch (message.command) {
+					case 'initialLoad':
+						console.log(
+							'[[viewLoader.js::initialLoad]]',
+							textEditor.document.getText()
+						);
+						this.postMessage(textEditor.document.getText());
+						break;
 					case 'updateText':
 						// eslint-disable-next-line no-case-declarations
-						const textEditor = this._editor;
-
 						var firstLine = textEditor.document.lineAt(0);
 						var lastLine = textEditor.document.lineAt(
 							textEditor.document.lineCount - 1
@@ -49,6 +55,7 @@ class ViewLoader {
 	}
 
 	postMessage = function (message) {
+		console.log('[[viewLoader.js::postMessage]]', message);
 		this._panel.webview.postMessage({ command: 'text', val: message });
 	};
 
@@ -112,15 +119,16 @@ class ViewLoader {
             (function() {
                 const vscode = acquireVsCodeApi();
                 const textChangeBinding = (e) => {
-                  const message = e.data;
-                  switch (message.command) {
-                      case 'updateText':
-                          console.log("message from react", message);
-                          vscode.postMessage(message);
-                          break;
-                  }
-              }
-              window.addEventListener('message', (e) => textChangeBinding(e));
+					const message = e.data;
+					switch (message.command) {
+						case 'updateText':
+							console.log("message from react", message);
+							vscode.postMessage(message);
+							break;
+					}
+              	}
+				window.addEventListener('message', (e) => textChangeBinding(e));
+				window.addEventListener('load', (e) => vscode.postMessage({command:'initialLoad'}));
             }())
         </script>
         </body>
