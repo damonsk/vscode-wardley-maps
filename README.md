@@ -40,8 +40,9 @@ Only one map can be rendered at any given time, we'll look to address with futur
 
 ### Bug fixes
 
-### Empty canvas on initial load.
-- [Fixed Display an existing map shows empty canvas #26](https://github.com/damonsk/vscode-wardley-maps/issues/26)
+#### Version 1.1.2
+
+- [Fixed - Display an existing map shows empty canvas #26](https://github.com/damonsk/vscode-wardley-maps/issues/26)
 
 ## January 2024 Release
 
