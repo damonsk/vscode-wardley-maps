@@ -36,6 +36,13 @@ Only one map can be rendered at any given time, we'll look to address with futur
 
 # Release Notes
 
+## February 2023 Release 
+
+### Bug fixes
+
+### Empty canvas on initial load.
+- [Fixed Display an existing map shows empty canvas #26](https://github.com/damonsk/vscode-wardley-maps/issues/26)
+
 ## January 2023 Release
 
 Thank you to @Preskton (Preston Doster) for their contributions, bringing vscode-wardley-maps up to date with the latest OnlineWardleyMaps release.
