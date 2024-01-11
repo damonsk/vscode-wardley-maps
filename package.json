@@ -80,6 +80,17 @@
 				"command": "vscode-wardley-maps.export-map-png",
 				"title": "Export Map as PNG",
 				"category": "Wardley Maps"
+			},
+			{
+				"command": "vscode-wardley-maps.export-to-owm",
+				"title": "Publish to OnlineWardleyMaps.com",
+				"category": "Wardley Maps"
+			}
+			,
+			{
+				"command": "vscode-wardley-maps.generate-clone-url",
+				"title": "Publish & Generate Clone URL",
+				"category": "Wardley Maps"
 			}
 		],
 		"languages": [

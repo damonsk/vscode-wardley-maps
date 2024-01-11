@@ -17,6 +17,12 @@ interface MapView {
 	loader: MapViewLoader;
 }
 
+interface OwmApiResponse {
+	id: string;
+	mapText: string;
+	// Add other attributes as needed
+}
+
 function activate(context: vscode.ExtensionContext) {
 	const mapViewExists = (name: string) => {
 		return getMapView(name) !== undefined;
@@ -213,7 +219,111 @@ function activate(context: vscode.ExtensionContext) {
 					);
 				}
 			}
-		)
+		),
+		vscode.commands.registerCommand(
+			'vscode-wardley-maps.export-to-owm',
+			async function () {
+				const editor = vscode.window.activeTextEditor;
+
+				if (editor) {
+					const { fileName } = editor.document;
+					console.log(
+						'[extension.ts] vscode-wardley-maps.export-to-owm -- ' +
+							editor.document.fileName
+					);
+					const mapText =
+						editor.document.getText() +
+						'\n\n//Exported from vscode-wardley-maps';
+
+					try {
+						const response = await fetch(
+							wmlandscape.Defaults.ApiEndpoint + 'save',
+							{
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json; charset=utf-8',
+								},
+								body: JSON.stringify({
+									id: '',
+									text: mapText,
+								}),
+							}
+						);
+
+						const data = await response.json() as OwmApiResponse;
+
+						// Show a VSCode info alert with the response data
+						vscode.window.showInformationMessage(
+							`Map exported successfully. URL: https://onlinewardleymaps.com/#${data.id}`
+						);
+
+						vscode.env.openExternal(vscode.Uri.parse(`https://onlinewardleymaps.com/#${data.id}`));
+
+					} catch (error) {
+						console.error('Error exporting to OWM:', error);
+						vscode.window.showErrorMessage(
+							'An error occurred while exporting to OWM.'
+						);
+					}
+				} else {
+					vscode.window.showErrorMessage(
+						'Please make sure Map Text document has focus.'
+					);
+				}
+			}
+		),
+		vscode.commands.registerCommand(
+			'vscode-wardley-maps.generate-clone-url',
+			async function () {
+				const editor = vscode.window.activeTextEditor;
+
+				if (editor) {
+					const { fileName } = editor.document;
+					console.log(
+						'[extension.ts] vscode-wardley-maps.generate-clone-url -- ' +
+							editor.document.fileName
+					);
+					const mapText =
+						editor.document.getText() +
+						'\n\n//Exported from vscode-wardley-maps';
+
+					try {
+						const response = await fetch(
+							wmlandscape.Defaults.ApiEndpoint + 'save',
+							{
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json; charset=utf-8',
+								},
+								body: JSON.stringify({
+									id: '',
+									text: mapText,
+								}),
+							}
+						);
+
+						const data = await response.json() as OwmApiResponse;
+
+						// Show a VSCode info alert with the response data
+						vscode.window.showInformationMessage(
+							`Map exported successfully. URL: https://onlinewardleymaps.com/#clone:${data.id}`
+						);
+
+						vscode.env.openExternal(vscode.Uri.parse(`https://onlinewardleymaps.com/#clone:${data.id}`));
+
+					} catch (error) {
+						console.error('Error exporting to OWM:', error);
+						vscode.window.showErrorMessage(
+							'An error occurred while exporting to OWM.'
+						);
+					}
+				} else {
+					vscode.window.showErrorMessage(
+						'Please make sure Map Text document has focus.'
+					);
+				}
+			}
+		),
 	);
 
 	context.subscriptions.push(

@@ -154,7 +154,6 @@ class MapViewLoader {
                 scriptText += `<script nonce="${nonce}" src="${element}"></script>\n`;
             }
         }
-//<meta http-equiv="Content-Security-Policy" content="default-src 'self' vscode-resource:; connect-src 'self' vscode-resource: https:; img-src 'self' data: vscode-resource: https:; script-src 'nonce-${nonce}'; style-src vscode-resource: 'unsafe-inline' http: https: data:;">
         return `<!DOCTYPE html>
         <html lang="en">
         <head>
