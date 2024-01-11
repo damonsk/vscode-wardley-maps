@@ -175,15 +175,12 @@ class MapViewLoader {
 					const message = e.data;
 					switch (message.command) {
 						case 'updateText':
-							console.log("message from react", message);
 							vscode.postMessage(message);
 							break;
 						case 'didExportAsSvg':
-							console.log("message from react", message);
 							vscode.postMessage(message);
 							break;
 						case 'didExportAsPng':
-							console.log("message from react", message);
 							vscode.postMessage(message);
 							break;
 					}

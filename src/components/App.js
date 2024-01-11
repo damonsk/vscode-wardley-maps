@@ -93,10 +93,10 @@ const App = () => {
 
 	const getHeight = () => {
 		var winHeight = window.innerHeight;
-		return winHeight - 120;
+		return winHeight - 140;
 	};
 	const getWidth = function () {
-		return document.getElementById('map').clientWidth - 50;
+		return document.getElementById('map').clientWidth - 70;
 	};
 
 	function debounce(fn, ms) {
@@ -121,8 +121,22 @@ const App = () => {
 		const createData = () =>
 			new Promise((resolve) => {
 				const mapNode = mapRef.current; // Make sure mapRef.current is a valid DOM node
+				const scale = 3;
+				const style = {
+					transform: 'scale(' + scale + ')',
+					transformOrigin: 'top left',
+					width: mapNode.offsetWidth + 'px',
+					height: mapNode.offsetHeight + 'px',
+					backgroundColor: 'white',
+				};
+				const param = {
+					height: mapNode.offsetHeight * scale,
+					width: mapNode.offsetWidth * scale,
+					quality: 1,
+					style,
+				};
 				domtoimage
-					.toBlob(mapNode)
+					.toBlob(mapNode, param)
 					.then((blob) => {
 						const reader = new FileReader();
 						reader.onloadend = () => {
