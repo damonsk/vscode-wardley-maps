@@ -23,12 +23,6 @@
 		"url": "https://github.com/damonsk/vscode-wardley-maps/issues"
 	},
 	"license": "SEE LICENSE IN LICENSE",
-	"activationEvents": [
-		"onCommand:vscode-wardley-maps.display-map",
-		"onCommand:vscode-wardley-maps.example-map",
-		"onCommand:vscode-wardley-maps.export-map-svg",
-		"onLanguage:wardleymap"
-	],
 	"main": "./extension/out/extension.js",
 	"contributes": {
 		"webviews": {

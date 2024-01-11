@@ -140,7 +140,7 @@ class ViewLoader {
           <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
           <meta name="theme-color" content="#000000">
           <title>React App</title>          
-		  <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' ${csp} vscode-resource:; connect-src ${csp} 'self' vscode-resource: https:; img-src ${csp} 'self' data: vscode-resource: https:; script-src ${csp} 'nonce-${nonce}'; style-src vscode-resource: 'unsafe-inline' http: https: data:;">-->
+		  <meta http-equiv="Content-Security-Policy" content="default-src 'self' ${csp} vscode-resource:; connect-src ${csp} 'self' vscode-resource: https:; img-src ${csp} 'self' data: vscode-resource: https:; script-src ${csp} 'nonce-${nonce}'; style-src vscode-resource: 'unsafe-inline' http: https: data:;">
           <base href="${csp}/">
         </head>
         <body>

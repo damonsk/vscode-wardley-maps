@@ -13,10 +13,15 @@ import {
 let client: LanguageClient;
 
 function activate(context) {
-	const onDidExportAsSvg = async (svgMarkup) => {
-		console.log('[extension.ts] onDidExportAsSvg -- ');
+	const saveFile = async (
+		extension,
+		data,
+		contentType = 'application/octet-stream'
+	) => {
+		console.log(`[extension.ts] onDidExportAs${extension.toUpperCase()} -- `);
+
 		const options = {
-			defaultUri: vscode.Uri.file('untitled.svg'),
+			defaultUri: vscode.Uri.file(`untitled.${extension}`),
 		};
 
 		const saveUri = await vscode.window.showSaveDialog(options);
@@ -25,37 +30,27 @@ function activate(context) {
 			const fs = require('fs');
 			const path = saveUri.fsPath;
 
-			fs.writeFileSync(path, svgMarkup);
-
-			vscode.window.showInformationMessage(
-				`Wardley Map SVG file saved to ${path}`
-			);
-		}
-	};
-	const onDidExportAsPng = async (arrayBuffer) => {
-		console.log('[extension.ts] onDidExportAsPng -- ');
-
-		const options = {
-			defaultUri: vscode.Uri.file('untitled.png'),
-		};
-
-		const saveUri = await vscode.window.showSaveDialog(options);
-
-		if (saveUri) {
-			const fs = require('fs');
-			const path = saveUri.fsPath;
-
-			const buffer = Buffer.from(arrayBuffer);
+			const buffer =
+				contentType === 'application/octet-stream' ? Buffer.from(data) : data;
 
 			fs.writeFileSync(path, buffer);
 
 			vscode.window.showInformationMessage(
-				`Wardley Map PNG file saved to ${path}`
+				`Wardley Map ${extension.toUpperCase()} file saved to ${path}`
 			);
 		}
 	};
 
+	const onDidExportAsSvg = async (svgMarkup) => {
+		await saveFile('svg', svgMarkup);
+	};
+
+	const onDidExportAsPng = async (arrayBuffer) => {
+		await saveFile('png', Buffer.from(arrayBuffer), 'image/png');
+	};
+
 	let panelInstances = [];
+
 	console.log(
 		'Congratulations, your extension "' +
 			context.extension.packageJSON.name +
