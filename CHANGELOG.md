@@ -6,6 +6,9 @@ All notable changes to the "vscode-wardley-maps" extension will be documented in
 
 ### Added
 - Ability to open and display many Wardley Maps #27
+- Ability to export to OnlineWardleyMaps and also generate Clone URLs. #28
+- Ability to export to PNG #2 #20
+- Ability to export to SVG #2 #20
 
 ### Fixed
 - Display an existing map shows empty canvas on first load of Display Map #26
