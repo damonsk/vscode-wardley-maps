@@ -13,6 +13,9 @@ import {
 let client: LanguageClient;
 
 function activate(context) {
+	const mapViewExists = (name) => {
+		return mapViews[name] !== undefined;
+	};
 	const saveFile = async (
 		extension,
 		data,
@@ -49,40 +52,42 @@ function activate(context) {
 		await saveFile('png', Buffer.from(arrayBuffer), 'image/png');
 	};
 
-	let panelInstances = [];
+	let mapViews = [];
 
-	console.log(
-		'Congratulations, your extension "' +
-			context.extension.packageJSON.name +
-			'" is now active!'
-	);
-
+	console.log(context.extension.packageJSON.name + '" is now active!');
 	console.log('Version = ' + context.extension.packageJSON.version);
 	const config_errors = vscode.languages.createDiagnosticCollection();
 	context.subscriptions.push(
 		config_errors,
-		vscode.workspace.onDidChangeTextDocument((x) => {
-			try {
-				if (panelInstances[x.document.fileName] !== undefined) {
+		vscode.workspace.onDidChangeTextDocument(
+			(x: { document: { fileName: string | number; getText: () => any } }) => {
+				const { document } = x;
+				const { fileName } = document;
+				try {
+					if (mapViewExists(fileName)) {
+						console.log('[extension.ts] onDidChangeTextDocument --', fileName);
+						mapViews[fileName].postMessage(document.getText());
+					}
+				} catch (e) {
 					console.log(
-						'[[extension.ts::onDidChangeTextDocument]]',
-						x.document.fileName
+						'[extension.ts] onDidChangeTextDocument::exception --',
+						e
 					);
-					panelInstances[x.document.fileName].postMessage(x.document.getText());
 				}
-			} catch (e) {
-				console.log('[[extension.ts::onDidChangeTextDocument::exception]]', e);
 			}
-		}),
-		vscode.workspace.onDidCloseTextDocument((t) => {
-			if (panelInstances[t.fileName] !== undefined) {
-				console.log('[[extension.ts::onDidCloseTextDocument]]', t.fileName);
-				panelInstances[t.fileName].dispose();
-				panelInstances = panelInstances.filter((it) => {
-					return it != t.fileName;
-				});
+		),
+		vscode.workspace.onDidCloseTextDocument(
+			(t: { fileName: string | number }) => {
+				const { fileName } = t;
+				if (mapViewExists(fileName)) {
+					console.log('[extension.ts] -- [[onDidCloseTextDocument]]', fileName);
+					mapViews[fileName].dispose();
+					mapViews = mapViews.filter((item) => {
+						return item != fileName;
+					});
+				}
 			}
-		})
+		)
 	);
 
 	context.subscriptions.push(
@@ -90,25 +95,23 @@ function activate(context) {
 			'vscode-wardley-maps.display-map',
 			function () {
 				const editor = vscode.window.activeTextEditor;
-
 				if (editor !== undefined) {
-					const mapFileName = editor.document.fileName;
+					const fileName = editor.document.fileName;
 
-					if (panelInstances[mapFileName]) {
-						panelInstances[mapFileName].reveal(vscode.ViewColumn.Beside);
+					if (mapViewExists(fileName)) {
+						mapViews[fileName].reveal(vscode.ViewColumn.Beside);
 					} else {
 						console.log(
-							'[extension.ts] vscode-wardley-maps.display-map -- ' + mapFileName
+							'[extension.ts] vscode-wardley-maps.display-map -- ' + fileName
 						);
 
-						panelInstances[mapFileName] = new ViewLoader(
+						mapViews[fileName] = createView(
 							context,
 							editor,
-							mapFileName,
 							onDidExportAsSvg,
 							onDidExportAsPng
 						);
-						panelInstances[mapFileName].setActiveEditor(editor);
+						mapViews[fileName].setActiveEditor(editor);
 					}
 				}
 			}
@@ -120,10 +123,9 @@ function activate(context) {
 					language: 'wardleymap',
 				});
 				const editor = await vscode.window.showTextDocument(document);
-
+				const { fileName } = editor.document;
 				console.log(
-					'[extension.ts] vscode-wardley-maps.example-map -- ' +
-						editor.document.fileName
+					'[extension.ts] vscode-wardley-maps.example-map -- ' + fileName
 				);
 
 				editor.edit((editBuilder) => {
@@ -133,14 +135,13 @@ function activate(context) {
 					);
 				});
 
-				panelInstances[editor.document.fileName] = new ViewLoader(
+				mapViews[fileName] = createView(
 					context,
 					editor,
-					editor.document.fileName,
 					onDidExportAsSvg,
 					onDidExportAsPng
 				);
-				panelInstances[editor.document.fileName].setActiveEditor(editor);
+				mapViews[fileName].setActiveEditor(editor);
 			}
 		),
 		vscode.commands.registerCommand(
@@ -149,16 +150,14 @@ function activate(context) {
 				const editor = vscode.window.activeTextEditor;
 
 				if (editor) {
+					const { fileName } = editor.document;
 					console.log(
 						'[extension.ts] vscode-wardley-maps.export-map-svg -- ' +
 							editor.document.fileName
 					);
 
-					if (panelInstances[editor.document.fileName] != undefined) {
-						panelInstances[editor.document.fileName].postMessage(
-							'exportAsSvg',
-							'exportAsSvg'
-						);
+					if (mapViewExists(fileName)) {
+						mapViews[fileName].postMessage('exportAsSvg', 'exportAsSvg');
 					} else {
 						vscode.window.showErrorMessage(
 							'Please make sure Map View has been rendered (Wardley Maps: Display Map).'
@@ -177,16 +176,13 @@ function activate(context) {
 				const editor = vscode.window.activeTextEditor;
 
 				if (editor) {
+					const { fileName } = editor.document;
 					console.log(
-						'[extension.ts] vscode-wardley-maps.export-map-png -- ' +
-							editor.document.fileName
+						'[extension.ts] vscode-wardley-maps.export-map-png -- ' + fileName
 					);
 
-					if (panelInstances[editor.document.fileName] != undefined) {
-						panelInstances[editor.document.fileName].postMessage(
-							'exportAsPng',
-							'exportAsPng'
-						);
+					if (mapViewExists(fileName)) {
+						mapViews[fileName].postMessage('exportAsPng', 'exportAsPng');
 					} else {
 						vscode.window.showErrorMessage(
 							'Please make sure Map View has been rendered (Wardley Maps: Display Map).'
@@ -204,22 +200,20 @@ function activate(context) {
 	context.subscriptions.push(
 		vscode.window.onDidChangeActiveTextEditor(function (editor) {
 			try {
-				if (
-					editor !== undefined &&
-					panelInstances[editor.document.fileName] !== undefined
-				) {
+				if (editor !== undefined) {
+					const { fileName } = editor.document;
 					console.log(
-						'[[extension.ts::onDidChangeActiveTextEditor]]',
-						editor.document.fileName
+						'[extension.ts] onDidChangeActiveTextEditor --',
+						fileName
 					);
-					panelInstances[editor.document.fileName].postMessage(
-						editor.document.getText()
-					);
-					panelInstances[editor.document.fileName].setActiveEditor(editor);
+					if (mapViewExists(fileName)) {
+						mapViews[fileName].postMessage(editor.document.getText());
+						mapViews[fileName].setActiveEditor(editor);
+					}
 				}
 			} catch (e) {
 				console.log(
-					'[[extension.ts::onDidChangeActiveTextEditor::exception]]',
+					'[extension.ts] onDidChangeActiveTextEditor::exception --',
 					e
 				);
 			}
@@ -267,6 +261,21 @@ function activate(context) {
 	client.start();
 }
 exports.activate = activate;
+
+function createView(
+	context: any,
+	editor: any,
+	onDidExportAsSvg: (svgMarkup: any) => Promise<void>,
+	onDidExportAsPng: (arrayBuffer: any) => Promise<void>
+): any {
+	return new ViewLoader(
+		context,
+		editor,
+		editor.document.fileName,
+		onDidExportAsSvg,
+		onDidExportAsPng
+	);
+}
 
 // this method is called when your extension is deactivated
 function deactivate() {
