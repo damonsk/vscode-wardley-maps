@@ -13,6 +13,48 @@ import {
 let client: LanguageClient;
 
 function activate(context) {
+	const onDidExportAsSvg = async (svgMarkup) => {
+		console.log('[extension.ts] onDidExportAsSvg -- ');
+		const options = {
+			defaultUri: vscode.Uri.file('untitled.svg'),
+		};
+
+		const saveUri = await vscode.window.showSaveDialog(options);
+
+		if (saveUri) {
+			const fs = require('fs');
+			const path = saveUri.fsPath;
+
+			fs.writeFileSync(path, svgMarkup);
+
+			vscode.window.showInformationMessage(
+				`Wardley Map SVG file saved to ${path}`
+			);
+		}
+	};
+	const onDidExportAsPng = async (arrayBuffer) => {
+		console.log('[extension.ts] onDidExportAsPng -- ');
+
+		const options = {
+			defaultUri: vscode.Uri.file('untitled.png'),
+		};
+
+		const saveUri = await vscode.window.showSaveDialog(options);
+
+		if (saveUri) {
+			const fs = require('fs');
+			const path = saveUri.fsPath;
+
+			const buffer = Buffer.from(arrayBuffer);
+
+			fs.writeFileSync(path, buffer);
+
+			vscode.window.showInformationMessage(
+				`Wardley Map PNG file saved to ${path}`
+			);
+		}
+	};
+
 	let panelInstances = [];
 	console.log(
 		'Congratulations, your extension "' +
@@ -53,18 +95,26 @@ function activate(context) {
 			'vscode-wardley-maps.display-map',
 			function () {
 				const editor = vscode.window.activeTextEditor;
-				if (editor !== undefined) {
-					console.log(
-						'[extension.ts] vscode-wardley-maps.display-map -- ' +
-							editor.document.fileName
-					);
 
-					panelInstances[editor.document.fileName] = new ViewLoader(
-						context,
-						editor,
-						editor.document.fileName
-					);
-					panelInstances[editor.document.fileName].setActiveEditor(editor);
+				if (editor !== undefined) {
+					const mapFileName = editor.document.fileName;
+
+					if (panelInstances[mapFileName]) {
+						panelInstances[mapFileName].reveal(vscode.ViewColumn.Beside);
+					} else {
+						console.log(
+							'[extension.ts] vscode-wardley-maps.display-map -- ' + mapFileName
+						);
+
+						panelInstances[mapFileName] = new ViewLoader(
+							context,
+							editor,
+							mapFileName,
+							onDidExportAsSvg,
+							onDidExportAsPng
+						);
+						panelInstances[mapFileName].setActiveEditor(editor);
+					}
 				}
 			}
 		),
@@ -91,9 +141,67 @@ function activate(context) {
 				panelInstances[editor.document.fileName] = new ViewLoader(
 					context,
 					editor,
-					editor.document.fileName
+					editor.document.fileName,
+					onDidExportAsSvg,
+					onDidExportAsPng
 				);
 				panelInstances[editor.document.fileName].setActiveEditor(editor);
+			}
+		),
+		vscode.commands.registerCommand(
+			'vscode-wardley-maps.export-map-svg',
+			async function () {
+				const editor = vscode.window.activeTextEditor;
+
+				if (editor) {
+					console.log(
+						'[extension.ts] vscode-wardley-maps.export-map-svg -- ' +
+							editor.document.fileName
+					);
+
+					if (panelInstances[editor.document.fileName] != undefined) {
+						panelInstances[editor.document.fileName].postMessage(
+							'exportAsSvg',
+							'exportAsSvg'
+						);
+					} else {
+						vscode.window.showErrorMessage(
+							'Please make sure Map View has been rendered (Wardley Maps: Display Map).'
+						);
+					}
+				} else {
+					vscode.window.showErrorMessage(
+						'Please make sure Map Text document has focus.'
+					);
+				}
+			}
+		),
+		vscode.commands.registerCommand(
+			'vscode-wardley-maps.export-map-png',
+			async function () {
+				const editor = vscode.window.activeTextEditor;
+
+				if (editor) {
+					console.log(
+						'[extension.ts] vscode-wardley-maps.export-map-png -- ' +
+							editor.document.fileName
+					);
+
+					if (panelInstances[editor.document.fileName] != undefined) {
+						panelInstances[editor.document.fileName].postMessage(
+							'exportAsPng',
+							'exportAsPng'
+						);
+					} else {
+						vscode.window.showErrorMessage(
+							'Please make sure Map View has been rendered (Wardley Maps: Display Map).'
+						);
+					}
+				} else {
+					vscode.window.showErrorMessage(
+						'Please make sure Map Text document has focus.'
+					);
+				}
 			}
 		)
 	);

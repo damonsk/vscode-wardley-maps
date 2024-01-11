@@ -4,14 +4,13 @@ import { Converter } from 'wmlandscape';
 import { ModKeyPressedProvider } from 'wmlandscape';
 import { FeatureSwitchesProvider } from 'wmlandscape';
 import { FeatureSwitches } from 'wmlandscape';
+import domtoimage from 'dom-to-image-more';
 
 const App = () => {
 	let vscodeFeatureSwitches = {
 		...FeatureSwitches.featureSwitches,
 		showToggleFullscreen: false,
 	};
-
-	console.log({ vscodeFeatureSwitches, ...FeatureSwitches.featureSwitches });
 
 	const [mapText, setMapText] = useState('');
 	const [mapTitle, setMapTitle] = useState('Untitled Map');
@@ -118,7 +117,61 @@ const App = () => {
 		}
 	};
 
-	React.useEffect(() => {
+	function exportToPng() {
+		const createData = () =>
+			new Promise((resolve) => {
+				const mapNode = mapRef.current; // Make sure mapRef.current is a valid DOM node
+				domtoimage
+					.toBlob(mapNode)
+					.then((blob) => {
+						const reader = new FileReader();
+						reader.onloadend = () => {
+							const arrayBuffer = reader.result;
+							// Send the arrayBuffer back to the extension
+							window.postMessage({
+								command: 'didExportAsPng',
+								val: arrayBuffer,
+							});
+							resolve();
+						};
+						reader.readAsArrayBuffer(blob);
+					})
+					.catch((error) => {
+						console.error('Error generating image:', error);
+						resolve(null);
+					});
+			});
+
+		createData();
+	}
+
+	function exportToSvg() {
+		const svgMapText = mapRef.current
+			.getElementsByTagName('svg')[0]
+			.outerHTML.replace(/&nbsp;/g, ' ');
+		window.postMessage({
+			command: 'didExportAsSvg',
+			val: `<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">${svgMapText}`,
+		});
+	}
+
+	useEffect(() => {
+		const messageHandler = (e) => {
+			const message = e.data;
+			console.log('[[App.js::messageHandler', message);
+			switch (message.command) {
+				case 'text':
+					mutateMapTextIn(message.val);
+					break;
+				case 'exportAsSvg':
+					exportToSvg();
+					break;
+				case 'exportAsPng':
+					exportToPng();
+					break;
+			}
+		};
+
 		const debouncedHandleResize = debounce(() => {
 			setMapDimensions({ width: getWidth(), height: getHeight() });
 		}, 1000);
@@ -127,16 +180,18 @@ const App = () => {
 			setMapDimensions({ width: getWidth(), height: getHeight() });
 		};
 
+		window.addEventListener('message', (e) => messageHandler(e));
 		window.addEventListener('resize', debouncedHandleResize);
 		window.addEventListener('load', initialLoad);
 
 		return function cleanup() {
+			window.removeEventListener('message', (e) => messageHandler(e));
 			window.removeEventListener('resize', debouncedHandleResize);
 			window.removeEventListener('load', initialLoad);
 		};
-	});
+	}, []);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		try {
 			var r = new Converter(vscodeFeatureSwitches).parse(mapText);
 			setMapTitle(r.title);
@@ -173,20 +228,6 @@ const App = () => {
 	}, [highlightLine]);
 
 	useEffect(() => {
-		const textChangeBinding = (e) => {
-			const message = e.data;
-			switch (message.command) {
-				case 'text':
-					mutateMapTextIn(message.val);
-					break;
-			}
-		};
-		window.addEventListener('message', (e) => textChangeBinding(e));
-		return () =>
-			window.removeEventListener('message', (e) => textChangeBinding(e));
-	}, [mutateMapTextIn]);
-
-	React.useEffect(() => {
 		switch (mapStyle) {
 			case 'colour':
 			case 'color':

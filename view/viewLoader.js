@@ -2,10 +2,12 @@ const vscode = require('vscode');
 const path = require('path');
 
 class ViewLoader {
-	constructor(context, editor, filename) {
+	constructor(context, editor, filename, onDidExportAsSvg, onDidExportAsPng) {
 		this._extensionPath = context.extensionPath;
 		this._editor = editor;
 		this._filename = filename;
+		this._onDidExportAsSvg = onDidExportAsSvg;
+		this._onDidExportAsPng = onDidExportAsPng;
 		this._panel = vscode.window.createWebviewPanel(
 			'mapView',
 			`Map View (${filename})`,
@@ -24,9 +26,23 @@ class ViewLoader {
 			(message) => {
 				const textEditor = this._editor;
 				switch (message.command) {
+					case 'didExportAsSvg':
+						console.log(
+							'[[viewLoader.js::onDidReceiveMessage::didExportAsSvg',
+							message
+						);
+						this._onDidExportAsSvg(message.val);
+						break;
+					case 'didExportAsPng':
+						console.log(
+							'[[viewLoader.js::onDidReceiveMessage::didExportAsPng',
+							message
+						);
+						this._onDidExportAsPng(message.val);
+						break;
 					case 'initialLoad':
 						console.log(
-							'[[viewLoader.js::initialLoad]]',
+							'[[viewLoader.js::onDidReceiveMessage::initialLoad]]',
 							textEditor.document.getText()
 						);
 						this.postMessage(textEditor.document.getText());
@@ -68,13 +84,17 @@ class ViewLoader {
 		this._panel.dispose();
 	};
 
-	postMessage = function (message) {
+	postMessage = function (message, command = 'text') {
 		console.log('[[viewLoader.js::postMessage]]', this._filename, message);
-		this._panel.webview.postMessage({ command: 'text', val: message });
+		this._panel.webview.postMessage({ command, val: message });
 	};
 
 	setActiveEditor = function (editor) {
 		this._editor = editor;
+	};
+
+	reveal = function (viewSettings) {
+		this._panel.reveal(viewSettings);
 	};
 
 	getNonce = function () {
@@ -94,6 +114,7 @@ class ViewLoader {
 	};
 
 	getWebviewContent = function () {
+		const csp = this._panel.webview.cspSource;
 		const p = path.join(this._extensionPath, 'build', 'asset-manifest.json');
 		const manifest = require(p);
 		const scripts = manifest.entrypoints;
@@ -118,12 +139,9 @@ class ViewLoader {
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
           <meta name="theme-color" content="#000000">
-          <title>React App</title>
-          
-          <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src vscode-resource: https:; script-src 'nonce-${nonce}';style-src vscode-resource: 'unsafe-inline' http: https: data:;">
-          <base href="${vscode.Uri.file(
-						path.join(this._extensionPath, 'build')
-					).with({ scheme: 'vscode-resource' })}/">
+          <title>React App</title>          
+		  <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' ${csp} vscode-resource:; connect-src ${csp} 'self' vscode-resource: https:; img-src ${csp} 'self' data: vscode-resource: https:; script-src ${csp} 'nonce-${nonce}'; style-src vscode-resource: 'unsafe-inline' http: https: data:;">-->
+          <base href="${csp}/">
         </head>
         <body>
           <div id="root"></div>
@@ -136,6 +154,14 @@ class ViewLoader {
 					const message = e.data;
 					switch (message.command) {
 						case 'updateText':
+							console.log("message from react", message);
+							vscode.postMessage(message);
+							break;
+						case 'didExportAsSvg':
+							console.log("message from react", message);
+							vscode.postMessage(message);
+							break;
+						case 'didExportAsPng':
 							console.log("message from react", message);
 							vscode.postMessage(message);
 							break;

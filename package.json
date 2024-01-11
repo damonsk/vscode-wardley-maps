@@ -26,10 +26,23 @@
 	"activationEvents": [
 		"onCommand:vscode-wardley-maps.display-map",
 		"onCommand:vscode-wardley-maps.example-map",
+		"onCommand:vscode-wardley-maps.export-map-svg",
 		"onLanguage:wardleymap"
 	],
 	"main": "./extension/out/extension.js",
 	"contributes": {
+		"webviews": {
+			"contentSecurityPolicy": {
+				"default-src": "'none'",
+				"connect-src": "vscode-resource:",
+				"img-src": [
+					"data:",
+					"data:image/svg+xml",
+					"https://*.vscode-cdn.net",
+					"https:"
+				]
+			}
+		},
 		"configuration": {
 			"type": "object",
 			"title": "Example configuration",
@@ -62,6 +75,16 @@
 			{
 				"command": "vscode-wardley-maps.example-map",
 				"title": "Example Map",
+				"category": "Wardley Maps"
+			},
+			{
+				"command": "vscode-wardley-maps.export-map-svg",
+				"title": "Export Map as SVG",
+				"category": "Wardley Maps"
+			},
+			{
+				"command": "vscode-wardley-maps.export-map-png",
+				"title": "Export Map as PNG",
 				"category": "Wardley Maps"
 			}
 		],
@@ -156,6 +179,7 @@
 		"bootstrap": "^4.5.3",
 		"concat-map": "^0.0.2",
 		"core-js": "^3.34.0",
+		"dom-to-image-more": "^3.2.0",
 		"lodash.merge": "^4.6.2",
 		"prop-types": "^15.8.1",
 		"react": "18.2.0",
