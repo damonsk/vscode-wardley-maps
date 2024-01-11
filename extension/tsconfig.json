@@ -1,13 +1,15 @@
 {
 	"compilerOptions": {
 		"module": "commonjs",
-		"target": "es2019",
-		"lib": ["ES2019"],
+		"target": "ES2020",
+		"lib": ["ES2020"],
 		"outDir": "out",
-		"rootDir": "src",
 		"sourceMap": true,
-		"composite": true
+		"strict": true,
+		"rootDir": "src",
+		"composite": true,
+		"types": ["node"],
 	},
-	"include": ["src"],
+	"include": ["src", "./extension/src/ViewLoader.ts"],
 	"exclude": ["node_modules", ".vscode-test"]
 }

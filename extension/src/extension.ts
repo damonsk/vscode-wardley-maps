@@ -1,5 +1,4 @@
-const ViewLoader = require('../../view/viewLoader');
-const vscode = require('vscode');
+import * as vscode from 'vscode';
 import * as wmlandscape from 'wmlandscape';
 import * as path from 'path';
 import { workspace } from 'vscode';
@@ -9,17 +8,26 @@ import {
 	ServerOptions,
 	TransportKind,
 } from 'vscode-languageclient/node';
+import MapViewLoader from './MapViewLoader';
 
 let client: LanguageClient;
 
-function activate(context) {
-	const mapViewExists = (name) => {
-		return mapViews[name] !== undefined;
+interface MapView {
+	name: string;
+	loader: MapViewLoader;
+}
+
+function activate(context: vscode.ExtensionContext) {
+	const mapViewExists = (name: string) => {
+		return getMapView(name) !== undefined;
+	};
+	const getMapView = (name: string) => {
+		return mapViews.find((instance) => instance.name == name)?.loader;
 	};
 	const saveFile = async (
-		extension,
-		data,
-		contentType = 'application/octet-stream'
+		extension: string,
+		data: Buffer,
+		contentType: string = 'application/octet-stream'
 	) => {
 		console.log(`[extension.ts] onDidExportAs${extension.toUpperCase()} -- `);
 
@@ -44,15 +52,15 @@ function activate(context) {
 		}
 	};
 
-	const onDidExportAsSvg = async (svgMarkup) => {
+	const onDidExportAsSvg = async (svgMarkup: Buffer) => {
 		await saveFile('svg', svgMarkup);
 	};
 
-	const onDidExportAsPng = async (arrayBuffer) => {
+	const onDidExportAsPng = async (arrayBuffer: ArrayBuffer) => {
 		await saveFile('png', Buffer.from(arrayBuffer), 'image/png');
 	};
 
-	let mapViews = [];
+	let mapViews: MapView[] = [];
 
 	console.log(context.extension.packageJSON.name + '" is now active!');
 	console.log('Version = ' + context.extension.packageJSON.version);
@@ -60,13 +68,14 @@ function activate(context) {
 	context.subscriptions.push(
 		config_errors,
 		vscode.workspace.onDidChangeTextDocument(
-			(x: { document: { fileName: string | number; getText: () => any } }) => {
+			(x: { document: { fileName: string; getText: () => any } }) => {
 				const { document } = x;
 				const { fileName } = document;
 				try {
 					if (mapViewExists(fileName)) {
 						console.log('[extension.ts] onDidChangeTextDocument --', fileName);
-						mapViews[fileName].postMessage(document.getText());
+						const mv = getMapView(fileName);
+						if (mv) mv.postMessage(document.getText());
 					}
 				} catch (e) {
 					console.log(
@@ -76,18 +85,17 @@ function activate(context) {
 				}
 			}
 		),
-		vscode.workspace.onDidCloseTextDocument(
-			(t: { fileName: string | number }) => {
-				const { fileName } = t;
-				if (mapViewExists(fileName)) {
-					console.log('[extension.ts] -- [[onDidCloseTextDocument]]', fileName);
-					mapViews[fileName].dispose();
-					mapViews = mapViews.filter((item) => {
-						return item != fileName;
-					});
-				}
+		vscode.workspace.onDidCloseTextDocument((t: { fileName: string }) => {
+			const { fileName } = t;
+			if (mapViewExists(fileName)) {
+				console.log('[extension.ts] -- [[onDidCloseTextDocument]]', fileName);
+				const mv = getMapView(fileName);
+				if (mv) mv.dispose();
+				mapViews = mapViews.filter((item) => {
+					return item.name != fileName;
+				});
 			}
-		)
+		})
 	);
 
 	context.subscriptions.push(
@@ -99,19 +107,24 @@ function activate(context) {
 					const fileName = editor.document.fileName;
 
 					if (mapViewExists(fileName)) {
-						mapViews[fileName].reveal(vscode.ViewColumn.Beside);
+						const mv = getMapView(fileName);
+						if (mv) mv.reveal(vscode.ViewColumn.Beside);
 					} else {
 						console.log(
 							'[extension.ts] vscode-wardley-maps.display-map -- ' + fileName
 						);
 
-						mapViews[fileName] = createView(
-							context,
-							editor,
-							onDidExportAsSvg,
-							onDidExportAsPng
-						);
-						mapViews[fileName].setActiveEditor(editor);
+						mapViews.push({
+							name: fileName,
+							loader: createView(
+								context,
+								editor,
+								onDidExportAsSvg,
+								onDidExportAsPng
+							),
+						});
+						const mv = getMapView(fileName);
+						if (mv) mv.setActiveEditor(editor);
 					}
 				}
 			}
@@ -135,13 +148,17 @@ function activate(context) {
 					);
 				});
 
-				mapViews[fileName] = createView(
-					context,
-					editor,
-					onDidExportAsSvg,
-					onDidExportAsPng
-				);
-				mapViews[fileName].setActiveEditor(editor);
+				mapViews.push({
+					name: fileName,
+					loader: createView(
+						context,
+						editor,
+						onDidExportAsSvg,
+						onDidExportAsPng
+					),
+				});
+				const mv = getMapView(fileName);
+				if (mv) mv.setActiveEditor(editor);
 			}
 		),
 		vscode.commands.registerCommand(
@@ -157,7 +174,8 @@ function activate(context) {
 					);
 
 					if (mapViewExists(fileName)) {
-						mapViews[fileName].postMessage('exportAsSvg', 'exportAsSvg');
+						const mv = getMapView(fileName);
+						if (mv) mv.postMessage('exportAsSvg', 'exportAsSvg');
 					} else {
 						vscode.window.showErrorMessage(
 							'Please make sure Map View has been rendered (Wardley Maps: Display Map).'
@@ -182,7 +200,8 @@ function activate(context) {
 					);
 
 					if (mapViewExists(fileName)) {
-						mapViews[fileName].postMessage('exportAsPng', 'exportAsPng');
+						const mv = getMapView(fileName);
+						if (mv) mv.postMessage('exportAsPng', 'exportAsPng');
 					} else {
 						vscode.window.showErrorMessage(
 							'Please make sure Map View has been rendered (Wardley Maps: Display Map).'
@@ -207,8 +226,11 @@ function activate(context) {
 						fileName
 					);
 					if (mapViewExists(fileName)) {
-						mapViews[fileName].postMessage(editor.document.getText());
-						mapViews[fileName].setActiveEditor(editor);
+						const mv = getMapView(fileName);
+						if (mv) {
+							mv.postMessage(editor.document.getText());
+							mv.setActiveEditor(editor);
+						}
 					}
 				}
 			} catch (e) {
@@ -263,18 +285,18 @@ function activate(context) {
 exports.activate = activate;
 
 function createView(
-	context: any,
+	context: vscode.ExtensionContext,
 	editor: any,
 	onDidExportAsSvg: (svgMarkup: any) => Promise<void>,
 	onDidExportAsPng: (arrayBuffer: any) => Promise<void>
-): any {
-	return new ViewLoader(
+): MapViewLoader {
+	return new MapViewLoader({
 		context,
 		editor,
-		editor.document.fileName,
+		filename: editor.document.fileName,
 		onDidExportAsSvg,
-		onDidExportAsPng
-	);
+		onDidExportAsPng,
+	});
 }
 
 // this method is called when your extension is deactivated
@@ -285,7 +307,9 @@ function deactivate() {
 	return client.stop();
 }
 
-module.exports = {
-	activate,
-	deactivate,
-};
+export { activate, deactivate };
+
+// module.exports = {
+// 	activate,
+// 	deactivate,
+// };
