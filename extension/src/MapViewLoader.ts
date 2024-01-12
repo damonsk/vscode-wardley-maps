@@ -15,7 +15,6 @@ interface MapViewLoaderOptions {
 }
 
 class MapViewLoader {
-
     private _extensionPath: string;
     private _editor: vscode.TextEditor;
     private _filename: string;
@@ -50,21 +49,21 @@ class MapViewLoader {
                 switch (message.command) {
                     case 'didExportAsSvg':
                         console.log(
-                            '[[MapViewLoader.js::onDidReceiveMessage::didExportAsSvg',
+                            '[MapViewLoader.js] onDidReceiveMessage::didExportAsSvg',
                             message
                         );
                         this._onDidExportAsSvg((message.val as string));
                         break;
                     case 'didExportAsPng':
                         console.log(
-                            '[[MapViewLoader.js::onDidReceiveMessage::didExportAsPng',
+                            '[MapViewLoader.js] onDidReceiveMessage::didExportAsPng',
                             message
                         );
                         this._onDidExportAsPng((message.val as ArrayBuffer));
                         break;
                     case 'initialLoad':
                         console.log(
-                            '[[MapViewLoader.js::onDidReceiveMessage::initialLoad]]',
+                            '[MapViewLoader.js] onDidReceiveMessage::initialLoad --',
                             textEditor.document.getText()
                         );
                         this.postMessage(textEditor.document.getText());
@@ -102,12 +101,12 @@ class MapViewLoader {
     }
 
     dispose() {
-        console.log('[[MapViewLoader.js::dispose]]', this._filename);
+        console.log('[MapViewLoader.js] dispose --', this._filename);
         this._panel.dispose();
     }
 
     postMessage(message: string, command: string = 'text') {
-        console.log('[[MapViewLoader.js::postMessage]]', this._filename, message);
+        console.log('[MapViewLoader.js] postMessage --', this._filename, message);
         this._panel.webview.postMessage({ command, val: message });
     }
 

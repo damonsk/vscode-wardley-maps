@@ -1,5 +1,8 @@
 {
-	"useTabs": true,
 	"singleQuote": true,
-	"trailingComma": "es5"
+	"semi": true,
+	"tabWidth": 2,
+	"useTabs": true,
+	"braceStyle": "expand",
+	"bracketSpacing": true
 }

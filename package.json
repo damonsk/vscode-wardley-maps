@@ -85,8 +85,7 @@
 				"command": "vscode-wardley-maps.export-to-owm",
 				"title": "Publish to OnlineWardleyMaps.com",
 				"category": "Wardley Maps"
-			}
-			,
+			},
 			{
 				"command": "vscode-wardley-maps.generate-clone-url",
 				"title": "Publish & Generate Clone URL",
@@ -122,23 +121,21 @@
 		]
 	},
 	"lint-staged": {
-		"*.{js,jsx}": [
-			"yarn run prettify --staged",
-			"yarn run lint src/ --fix",
+		"*.{js,ts,jsx,tsx,json}": [
+			"eslint --fix",
 			"git add"
 		]
 	},
 	"scripts": {
 		"vscode:prepublish": "NODE_OPTIONS=--openssl-legacy-provider yarn run compile",
 		"compile": "NODE_OPTIONS=--openssl-legacy-provider npm-run-all compile:*",
-		"watch": "npm-run-all -p watch:*",
 		"compile:views": "react-app-rewired build",
-		"watch:views": "react-app-rewired start",
 		"compile:ext": "tsc -b",
+		"watch": "npm-run-all -p watch:*",
+		"watch:views": "react-app-rewired start",
 		"watch:ext": "tsc -b -w",
 		"precommit": "lint-staged",
-		"lint": "eslint src/",
-		"prettify": "pretty-quick",
+		"lint": "eslint --fix src/",
 		"test": "vscode-test"
 	},
 	"devDependencies": {

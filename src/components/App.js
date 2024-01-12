@@ -29,7 +29,7 @@ const App = () => {
 	const [mapAccelerators, setMapAccelerators] = useState([]);
 	const [mapMethods, setMapMethods] = useState([]);
 	const [mapAnnotationsPresentation, setMapAnnotationsPresentation] = useState(
-		[]
+		[],
 	);
 
 	const [mapDimensions, setMapDimensions] = useState({
@@ -37,7 +37,7 @@ const App = () => {
 		height: 500,
 	});
 	const [mapEvolutionStates, setMapEvolutionStates] = useState(
-		Defaults.EvolutionStages
+		Defaults.EvolutionStages,
 	);
 	const [mapStyle, setMapStyle] = useState('plain');
 	const [mapYAxis, setMapYAxis] = useState({});
@@ -73,8 +73,7 @@ const App = () => {
 		if (componentName.current.value.trim().length === 0) return;
 		setShowAdd(false);
 		mutateMapText(
-			mapText +
-				`\r\ncomponent ${componentName.current.value} [${newComponentContext.y}, ${newComponentContext.x}]`
+			`${mapText}\r\ncomponent ${componentName.current.value} [${newComponentContext.y}, ${newComponentContext.x}]`,
 		);
 	}
 	function cancelShowAdd() {

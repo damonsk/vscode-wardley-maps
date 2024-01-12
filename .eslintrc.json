@@ -6,7 +6,6 @@
 			"jsx": true
 		}
 	},
-	"parser": "babel-eslint",
 	"env": {
 		"browser": true,
 		"node": true,
@@ -14,7 +13,10 @@
 		"jest": true,
 		"amd": true
 	},
-	"plugins": ["react", "prettier"],
+	"plugins": [
+		"react",
+		"prettier"
+	],
 	"extends": [
 		"eslint:recommended",
 		"plugin:react/recommended",
@@ -22,12 +24,13 @@
 	],
 	"rules": {
 		"prettier/prettier": [
-				"error",
-				{
-						"endOfLine": "auto"
-				}
+			"error",
+			{},
+			{
+				"usePrettierrc": true
+			}
 		],
-		"linebreak-style": 0,
-		"react/prop-types": 0
+		"linebreak-style": "off",
+		"react/prop-types": "off"
 	}
 }

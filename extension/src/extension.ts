@@ -9,24 +9,12 @@ import {
 	TransportKind,
 } from 'vscode-languageclient/node';
 import MapViewLoader from './MapViewLoader';
+import { OwmApiResponse } from './OwmApiResponse';
+import { MapView } from './MapView';
 
 let client: LanguageClient;
 
-interface MapView {
-	name: string;
-	loader: MapViewLoader;
-}
-
-interface OwmApiResponse {
-	id: string;
-	mapText: string;
-	// Add other attributes as needed
-}
-
 function activate(context: vscode.ExtensionContext) {
-	const mapViewExists = (name: string) => {
-		return getMapView(name) !== undefined;
-	};
 	const getMapView = (name: string) => {
 		return mapViews.find((instance) => instance.name == name)?.loader;
 	};
@@ -78,10 +66,11 @@ function activate(context: vscode.ExtensionContext) {
 				const { document } = x;
 				const { fileName } = document;
 				try {
-					if (mapViewExists(fileName)) {
-						console.log('[extension.ts] onDidChangeTextDocument --', fileName);
-						const mv = getMapView(fileName);
-						if (mv) mv.postMessage(document.getText());
+
+					console.log('[extension.ts] onDidChangeTextDocument --', fileName);
+					const mv = getMapView(fileName);
+					if (mv !== undefined) {
+						mv.postMessage(document.getText());
 					}
 				} catch (e) {
 					console.log(
@@ -93,14 +82,17 @@ function activate(context: vscode.ExtensionContext) {
 		),
 		vscode.workspace.onDidCloseTextDocument((t: { fileName: string }) => {
 			const { fileName } = t;
-			if (mapViewExists(fileName)) {
+
+
+			const mv = getMapView(fileName);
+			if (mv !== undefined) {
 				console.log('[extension.ts] -- [[onDidCloseTextDocument]]', fileName);
-				const mv = getMapView(fileName);
-				if (mv) mv.dispose();
+				mv.dispose();
 				mapViews = mapViews.filter((item) => {
 					return item.name != fileName;
 				});
 			}
+
 		})
 	);
 
@@ -112,9 +104,9 @@ function activate(context: vscode.ExtensionContext) {
 				if (editor !== undefined) {
 					const fileName = editor.document.fileName;
 
-					if (mapViewExists(fileName)) {
-						const mv = getMapView(fileName);
-						if (mv) mv.reveal(vscode.ViewColumn.Beside);
+					const mv = getMapView(fileName);
+					if (mv !== undefined) {
+						mv.reveal(vscode.ViewColumn.Beside);
 					} else {
 						console.log(
 							'[extension.ts] vscode-wardley-maps.display-map -- ' + fileName
@@ -130,7 +122,9 @@ function activate(context: vscode.ExtensionContext) {
 							),
 						});
 						const mv = getMapView(fileName);
-						if (mv) mv.setActiveEditor(editor);
+						if (mv !== undefined) {
+							mv.setActiveEditor(editor);
+						}
 					}
 				}
 			}
@@ -164,7 +158,9 @@ function activate(context: vscode.ExtensionContext) {
 					),
 				});
 				const mv = getMapView(fileName);
-				if (mv) mv.setActiveEditor(editor);
+				if (mv !== undefined) {
+					mv.setActiveEditor(editor);
+				}
 			}
 		),
 		vscode.commands.registerCommand(
@@ -174,14 +170,12 @@ function activate(context: vscode.ExtensionContext) {
 
 				if (editor) {
 					const { fileName } = editor.document;
-					console.log(
-						'[extension.ts] vscode-wardley-maps.export-map-svg -- ' +
-							editor.document.fileName
+					console.log('[extension.ts] vscode-wardley-maps.export-map-svg -- ' +
+						editor.document.fileName
 					);
-
-					if (mapViewExists(fileName)) {
-						const mv = getMapView(fileName);
-						if (mv) mv.postMessage('exportAsSvg', 'exportAsSvg');
+					const mv = getMapView(fileName);
+					if (mv !== undefined) {
+						mv.postMessage('exportAsSvg', 'exportAsSvg');
 					} else {
 						vscode.window.showErrorMessage(
 							'Please make sure Map View has been rendered (Wardley Maps: Display Map).'
@@ -205,9 +199,9 @@ function activate(context: vscode.ExtensionContext) {
 						'[extension.ts] vscode-wardley-maps.export-map-png -- ' + fileName
 					);
 
-					if (mapViewExists(fileName)) {
-						const mv = getMapView(fileName);
-						if (mv) mv.postMessage('exportAsPng', 'exportAsPng');
+					const mv = getMapView(fileName);
+					if (mv !== undefined) {
+						mv.postMessage('exportAsPng', 'exportAsPng');
 					} else {
 						vscode.window.showErrorMessage(
 							'Please make sure Map View has been rendered (Wardley Maps: Display Map).'
@@ -229,7 +223,7 @@ function activate(context: vscode.ExtensionContext) {
 					const { fileName } = editor.document;
 					console.log(
 						'[extension.ts] vscode-wardley-maps.export-to-owm -- ' +
-							editor.document.fileName
+						editor.document.fileName
 					);
 					const mapText =
 						editor.document.getText() +
@@ -281,7 +275,7 @@ function activate(context: vscode.ExtensionContext) {
 					const { fileName } = editor.document;
 					console.log(
 						'[extension.ts] vscode-wardley-maps.generate-clone-url -- ' +
-							editor.document.fileName
+						editor.document.fileName
 					);
 					const mapText =
 						editor.document.getText() +
@@ -335,12 +329,10 @@ function activate(context: vscode.ExtensionContext) {
 						'[extension.ts] onDidChangeActiveTextEditor --',
 						fileName
 					);
-					if (mapViewExists(fileName)) {
-						const mv = getMapView(fileName);
-						if (mv) {
-							mv.postMessage(editor.document.getText());
-							mv.setActiveEditor(editor);
-						}
+					const mapView = getMapView(fileName);
+					if (mapView !== undefined) {
+						mapView.postMessage(editor.document.getText());
+						mapView.setActiveEditor(editor);
 					}
 				}
 			} catch (e) {
@@ -409,7 +401,6 @@ function createView(
 	});
 }
 
-// this method is called when your extension is deactivated
 function deactivate() {
 	if (!client) {
 		return undefined;
@@ -418,8 +409,3 @@ function deactivate() {
 }
 
 export { activate, deactivate };
-
-// module.exports = {
-// 	activate,
-// 	deactivate,
-// };
