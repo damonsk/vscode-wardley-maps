@@ -64,7 +64,11 @@
 			{
 				"command": "vscode-wardley-maps.display-map",
 				"title": "Display Map",
-				"category": "Wardley Maps"
+				"category": "Wardley Maps",
+				"icon": {
+					"light": "./images/icon.png",
+					"dark": "./images/icon.png"
+				}
 			},
 			{
 				"command": "vscode-wardley-maps.example-map",
@@ -85,14 +89,30 @@
 				"command": "vscode-wardley-maps.export-to-owm",
 				"title": "Publish to OnlineWardleyMaps.com",
 				"category": "Wardley Maps"
-			}
-			,
+			},
 			{
 				"command": "vscode-wardley-maps.generate-clone-url",
 				"title": "Publish & Generate Clone URL",
 				"category": "Wardley Maps"
 			}
 		],
+		"menus": {
+			"editor/title": [
+				{
+					"when": "resourceLangId == wardleymap",
+					"command": "vscode-wardley-maps.display-map",
+					"alt": "wardleymap.showPreview",
+					"group": "navigation"
+				}
+			],
+			"explorer/context": [
+				{
+					"when": "resourceLangId == wardleymap",
+					"command": "vscode-wardley-maps.display-map",
+					"group": "navigation"
+				}
+			]
+		},
 		"languages": [
 			{
 				"id": "wardleymap",
