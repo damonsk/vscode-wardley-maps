@@ -38,3 +38,13 @@ A list of all commands can be found [here](./usage.md)
 ## Chagelog
 
 A list of features/fixed can be found [here](./CHANGELOG.md)
+
+## Support the Project
+
+If you find [obsidian-wardley-maps](https://github.com/damonsk/obsidian-wardley-maps), [OnlineWardleyMaps](https://github.com/damonsk/onlinewardleymaps) or [vscode-wardley-maps](https://github.com/damonsk/vscode-wardley-maps) valuable, consider supporting its development:
+
+[![Patreon](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/mapsascode/overview)
+
+Follow on X (Twitter) [@MapsAsCode](https://x.com/mapsascode) for updates and announcements!
+
+Your support helps maintain and improve this plugin as well as OnlineWardleyMaps and vscode-wardley-maps. Every contribution is appreciated. Thank you for your support!
