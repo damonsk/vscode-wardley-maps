@@ -101,7 +101,6 @@
 				{
 					"when": "resourceLangId == wardleymap",
 					"command": "vscode-wardley-maps.display-map",
-					"alt": "wardleymap.showPreview",
 					"group": "navigation"
 				}
 			],
