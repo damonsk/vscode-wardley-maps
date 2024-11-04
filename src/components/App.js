@@ -10,6 +10,10 @@ const App = () => {
 	let vscodeFeatureSwitches = {
 		...FeatureSwitches.featureSwitches,
 		showToggleFullscreen: false,
+		enableQuickAdd: false,
+		showMapToolbar: false,
+		showMiniMap: false,
+		allowMapZoomMouseWheel: false,
 	};
 
 	const [mapText, setMapText] = useState('');
@@ -36,6 +40,11 @@ const App = () => {
 		width: 500,
 		height: 500,
 	});
+	const [mapCanvasDimensions, setMapCanvasDimensions] = useState({
+		width: 500,
+		height: 500,
+	});
+	const [mapSize, setMapSize] = useState({ width: 0, height: 0 });
 	const [mapEvolutionStates, setMapEvolutionStates] = useState(
 		Defaults.EvolutionStages,
 	);
@@ -68,6 +77,34 @@ const App = () => {
 	useEffect(() => {
 		if (showAdd) componentName.current.focus();
 	}, [showAdd]);
+
+	useEffect(() => {
+		setMapDimensions({
+			width: mapSize.width > 0 ? mapSize.width : 500,
+			height: mapSize.height > 0 ? mapSize.height : 500,
+		});
+		setMapCanvasDimensions({
+			width: mapSize.width > 0 ? mapSize.width * 0.92 : 500,
+			height: mapSize.height > 0 ? mapSize.height : 500,
+		});
+	}, [mapSize]);
+
+	useEffect(() => {
+		const debouncedHandleResize = debounce(() => {
+			const dimensions = {
+				width: mapSize.width > 0 ? mapSize.width : 100 + getWidth(),
+				height: mapSize.height > 0 ? mapSize.height : getHeight(),
+			};
+			setMapDimensions(dimensions);
+		}, 1);
+
+		window.addEventListener('resize', debouncedHandleResize);
+		debouncedHandleResize();
+
+		return function cleanup() {
+			window.removeEventListener('resize', debouncedHandleResize);
+		};
+	}, [mapSize]);
 
 	function addNewComponent() {
 		if (componentName.current.value.trim().length === 0) return;
@@ -185,22 +222,31 @@ const App = () => {
 			}
 		};
 
-		const debouncedHandleResize = debounce(() => {
-			setMapDimensions({ width: getWidth(), height: getHeight() });
-		}, 1000);
+		//window.addEventListener('message', (e) => messageHandler(e));
+		//window.removeEventListener('message', (e) => messageHandler(e));
 
 		const initialLoad = () => {
-			setMapDimensions({ width: getWidth(), height: getHeight() });
+			setMapCanvasDimensions({
+				width: getWidth(),
+				height: getHeight(),
+			});
 		};
 
+		const debouncedHandleCanvasResize = debounce(() => {
+			setMapCanvasDimensions({
+				width: getWidth(),
+				height: getHeight(),
+			});
+		}, 500);
+
 		window.addEventListener('message', (e) => messageHandler(e));
-		window.addEventListener('resize', debouncedHandleResize);
 		window.addEventListener('load', initialLoad);
+		window.addEventListener('resize', debouncedHandleCanvasResize);
 
 		return function cleanup() {
-			window.removeEventListener('message', (e) => messageHandler(e));
-			window.removeEventListener('resize', debouncedHandleResize);
+			window.removeEventListener('resize', debouncedHandleCanvasResize);
 			window.removeEventListener('load', initialLoad);
+			window.removeEventListener('message', (e) => messageHandler(e));
 		};
 	}, []);
 
@@ -221,6 +267,7 @@ const App = () => {
 			setMapUrls(r.urls);
 			setMapMethods(r.methods);
 			setMapAttitudes(r.attitudes);
+			setMapSize(r.presentation.size);
 			setMapStyle(r.presentation.style);
 			setMapAccelerators(r.accelerators);
 			setMapYAxis(r.presentation.yAxis);
@@ -282,6 +329,7 @@ const App = () => {
 							mapStyleDefs={mapStyleDefs}
 							mapYAxis={mapYAxis}
 							mapDimensions={mapDimensions}
+							mapCanvasDimensions={mapCanvasDimensions}
 							mapEvolutionStates={mapEvolutionStates}
 							mapRef={mapRef}
 							mapText={mapText}
