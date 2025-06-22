@@ -35,7 +35,7 @@ To understand the capabilities and features available from this extension, clone
 ## Usage
 A list of all commands can be found [here](./usage.md)
 
-## Chagelog
+## Changelog
 
 A list of features/fixed can be found [here](./CHANGELOG.md)
 
