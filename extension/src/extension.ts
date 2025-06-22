@@ -21,7 +21,7 @@ function activate(context: vscode.ExtensionContext) {
 	const saveFile = async (
 		extension: string,
 		data: Buffer,
-		contentType: string = 'application/octet-stream'
+		contentType: string = 'application/octet-stream',
 	) => {
 		console.log(`[extension.ts] onDidExportAs${extension.toUpperCase()} -- `);
 
@@ -41,7 +41,7 @@ function activate(context: vscode.ExtensionContext) {
 			fs.writeFileSync(path, buffer);
 
 			vscode.window.showInformationMessage(
-				`Wardley Map ${extension.toUpperCase()} file saved to ${path}`
+				`Wardley Map ${extension.toUpperCase()} file saved to ${path}`,
 			);
 		}
 	};
@@ -66,7 +66,6 @@ function activate(context: vscode.ExtensionContext) {
 				const { document } = x;
 				const { fileName } = document;
 				try {
-
 					console.log('[extension.ts] onDidChangeTextDocument --', fileName);
 					const mv = getMapView(fileName);
 					if (mv !== undefined) {
@@ -75,14 +74,13 @@ function activate(context: vscode.ExtensionContext) {
 				} catch (e) {
 					console.log(
 						'[extension.ts] onDidChangeTextDocument::exception --',
-						e
+						e,
 					);
 				}
-			}
+			},
 		),
 		vscode.workspace.onDidCloseTextDocument((t: { fileName: string }) => {
 			const { fileName } = t;
-
 
 			const mv = getMapView(fileName);
 			if (mv !== undefined) {
@@ -92,8 +90,7 @@ function activate(context: vscode.ExtensionContext) {
 					return item.name != fileName;
 				});
 			}
-
-		})
+		}),
 	);
 
 	context.subscriptions.push(
@@ -109,7 +106,7 @@ function activate(context: vscode.ExtensionContext) {
 						mv.reveal(vscode.ViewColumn.Beside);
 					} else {
 						console.log(
-							'[extension.ts] vscode-wardley-maps.display-map -- ' + fileName
+							'[extension.ts] vscode-wardley-maps.display-map -- ' + fileName,
 						);
 
 						mapViews.push({
@@ -118,7 +115,7 @@ function activate(context: vscode.ExtensionContext) {
 								context,
 								editor,
 								onDidExportAsSvg,
-								onDidExportAsPng
+								onDidExportAsPng,
 							),
 						});
 						const mv = getMapView(fileName);
@@ -127,7 +124,7 @@ function activate(context: vscode.ExtensionContext) {
 						}
 					}
 				}
-			}
+			},
 		),
 		vscode.commands.registerCommand(
 			'vscode-wardley-maps.example-map',
@@ -138,14 +135,11 @@ function activate(context: vscode.ExtensionContext) {
 				const editor = await vscode.window.showTextDocument(document);
 				const { fileName } = editor.document;
 				console.log(
-					'[extension.ts] vscode-wardley-maps.example-map -- ' + fileName
+					'[extension.ts] vscode-wardley-maps.example-map -- ' + fileName,
 				);
 
 				editor.edit((editBuilder) => {
-					editBuilder.insert(
-						new vscode.Position(0, 0),
-						Defaults.ExampleMap
-					);
+					editBuilder.insert(new vscode.Position(0, 0), Defaults.ExampleMap);
 				});
 
 				mapViews.push({
@@ -154,14 +148,14 @@ function activate(context: vscode.ExtensionContext) {
 						context,
 						editor,
 						onDidExportAsSvg,
-						onDidExportAsPng
+						onDidExportAsPng,
 					),
 				});
 				const mv = getMapView(fileName);
 				if (mv !== undefined) {
 					mv.setActiveEditor(editor);
 				}
-			}
+			},
 		),
 		vscode.commands.registerCommand(
 			'vscode-wardley-maps.export-map-svg',
@@ -170,23 +164,24 @@ function activate(context: vscode.ExtensionContext) {
 
 				if (editor) {
 					const { fileName } = editor.document;
-					console.log('[extension.ts] vscode-wardley-maps.export-map-svg -- ' +
-						editor.document.fileName
+					console.log(
+						'[extension.ts] vscode-wardley-maps.export-map-svg -- ' +
+							editor.document.fileName,
 					);
 					const mv = getMapView(fileName);
 					if (mv !== undefined) {
 						mv.postMessage('exportAsSvg', 'exportAsSvg');
 					} else {
 						vscode.window.showErrorMessage(
-							'Please make sure Map View has been rendered (Wardley Maps: Display Map).'
+							'Please make sure Map View has been rendered (Wardley Maps: Display Map).',
 						);
 					}
 				} else {
 					vscode.window.showErrorMessage(
-						'Please make sure Map Text document has focus.'
+						'Please make sure Map Text document has focus.',
 					);
 				}
-			}
+			},
 		),
 		vscode.commands.registerCommand(
 			'vscode-wardley-maps.export-map-png',
@@ -196,7 +191,7 @@ function activate(context: vscode.ExtensionContext) {
 				if (editor) {
 					const { fileName } = editor.document;
 					console.log(
-						'[extension.ts] vscode-wardley-maps.export-map-png -- ' + fileName
+						'[extension.ts] vscode-wardley-maps.export-map-png -- ' + fileName,
 					);
 
 					const mv = getMapView(fileName);
@@ -204,15 +199,15 @@ function activate(context: vscode.ExtensionContext) {
 						mv.postMessage('exportAsPng', 'exportAsPng');
 					} else {
 						vscode.window.showErrorMessage(
-							'Please make sure Map View has been rendered (Wardley Maps: Display Map).'
+							'Please make sure Map View has been rendered (Wardley Maps: Display Map).',
 						);
 					}
 				} else {
 					vscode.window.showErrorMessage(
-						'Please make sure Map Text document has focus.'
+						'Please make sure Map Text document has focus.',
 					);
 				}
-			}
+			},
 		),
 		vscode.commands.registerCommand(
 			'vscode-wardley-maps.export-to-owm',
@@ -223,48 +218,46 @@ function activate(context: vscode.ExtensionContext) {
 					const { fileName } = editor.document;
 					console.log(
 						'[extension.ts] vscode-wardley-maps.export-to-owm -- ' +
-						editor.document.fileName
+							editor.document.fileName,
 					);
 					const mapText =
 						editor.document.getText() +
 						'\n\n//Exported from vscode-wardley-maps';
 
 					try {
-						const response = await fetch(
-							Defaults.ApiEndpoint + 'save',
-							{
-								method: 'POST',
-								headers: {
-									'Content-Type': 'application/json; charset=utf-8',
-								},
-								body: JSON.stringify({
-									id: '',
-									text: mapText,
-								}),
-							}
-						);
+						const response = await fetch(Defaults.ApiEndpoint + 'save', {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json; charset=utf-8',
+							},
+							body: JSON.stringify({
+								id: '',
+								text: mapText,
+							}),
+						});
 
-						const data = await response.json() as OwmApiResponse;
+						const data = (await response.json()) as OwmApiResponse;
 
 						// Show a VSCode info alert with the response data
 						vscode.window.showInformationMessage(
-							`Map exported successfully. URL: https://onlinewardleymaps.com/#${data.id}`
+							`Map exported successfully. URL: https://onlinewardleymaps.com/#${data.id}`,
 						);
 
-						vscode.env.openExternal(vscode.Uri.parse(`https://onlinewardleymaps.com/#${data.id}`));
-
+						vscode.env.openExternal(
+							vscode.Uri.parse(`https://onlinewardleymaps.com/#${data.id}`),
+						);
 					} catch (error) {
 						console.error('Error exporting to OWM:', error);
 						vscode.window.showErrorMessage(
-							'An error occurred while exporting to OWM.'
+							'An error occurred while exporting to OWM.',
 						);
 					}
 				} else {
 					vscode.window.showErrorMessage(
-						'Please make sure Map Text document has focus.'
+						'Please make sure Map Text document has focus.',
 					);
 				}
-			}
+			},
 		),
 		vscode.commands.registerCommand(
 			'vscode-wardley-maps.generate-clone-url',
@@ -275,48 +268,48 @@ function activate(context: vscode.ExtensionContext) {
 					const { fileName } = editor.document;
 					console.log(
 						'[extension.ts] vscode-wardley-maps.generate-clone-url -- ' +
-						editor.document.fileName
+							editor.document.fileName,
 					);
 					const mapText =
 						editor.document.getText() +
 						'\n\n//Exported from vscode-wardley-maps';
 
 					try {
-						const response = await fetch(
-							Defaults.ApiEndpoint + 'save',
-							{
-								method: 'POST',
-								headers: {
-									'Content-Type': 'application/json; charset=utf-8',
-								},
-								body: JSON.stringify({
-									id: '',
-									text: mapText,
-								}),
-							}
-						);
+						const response = await fetch(Defaults.ApiEndpoint + 'save', {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json; charset=utf-8',
+							},
+							body: JSON.stringify({
+								id: '',
+								text: mapText,
+							}),
+						});
 
-						const data = await response.json() as OwmApiResponse;
+						const data = (await response.json()) as OwmApiResponse;
 
 						// Show a VSCode info alert with the response data
 						vscode.window.showInformationMessage(
-							`Map exported successfully. URL: https://onlinewardleymaps.com/#clone:${data.id}`
+							`Map exported successfully. URL: https://onlinewardleymaps.com/#clone:${data.id}`,
 						);
 
-						vscode.env.openExternal(vscode.Uri.parse(`https://onlinewardleymaps.com/#clone:${data.id}`));
-
+						vscode.env.openExternal(
+							vscode.Uri.parse(
+								`https://onlinewardleymaps.com/#clone:${data.id}`,
+							),
+						);
 					} catch (error) {
 						console.error('Error exporting to OWM:', error);
 						vscode.window.showErrorMessage(
-							'An error occurred while exporting to OWM.'
+							'An error occurred while exporting to OWM.',
 						);
 					}
 				} else {
 					vscode.window.showErrorMessage(
-						'Please make sure Map Text document has focus.'
+						'Please make sure Map Text document has focus.',
 					);
 				}
-			}
+			},
 		),
 	);
 
@@ -327,7 +320,7 @@ function activate(context: vscode.ExtensionContext) {
 					const { fileName } = editor.document;
 					console.log(
 						'[extension.ts] onDidChangeActiveTextEditor --',
-						fileName
+						fileName,
 					);
 					const mapView = getMapView(fileName);
 					if (mapView !== undefined) {
@@ -338,23 +331,23 @@ function activate(context: vscode.ExtensionContext) {
 			} catch (e) {
 				console.log(
 					'[extension.ts] onDidChangeActiveTextEditor::exception --',
-					e
+					e,
 				);
 			}
-		})
+		}),
 	);
 
 	// The server is implemented in node
-	let serverModule = context.asAbsolutePath(
-		path.join('server', 'out', 'server.js')
+	const serverModule = context.asAbsolutePath(
+		path.join('server', 'out', 'server.js'),
 	);
 	// The debug options for the server
 	// --inspect=6009: runs the server in Node's Inspector mode so VS Code can attach to the server for debugging
-	let debugOptions = { execArgv: ['--nolazy', '--inspect=6009'] };
+	const debugOptions = { execArgv: ['--nolazy', '--inspect=6009'] };
 
 	// If the extension is launched in debug mode then the debug server options are used
 	// Otherwise the run options are used
-	let serverOptions: ServerOptions = {
+	const serverOptions: ServerOptions = {
 		run: { module: serverModule, transport: TransportKind.ipc },
 		debug: {
 			module: serverModule,
@@ -364,7 +357,7 @@ function activate(context: vscode.ExtensionContext) {
 	};
 
 	// Options to control the language client
-	let clientOptions: LanguageClientOptions = {
+	const clientOptions: LanguageClientOptions = {
 		// Register the server for plain text documents
 		documentSelector: [{ scheme: 'file', language: 'wardleymap' }],
 		synchronize: {
@@ -378,7 +371,7 @@ function activate(context: vscode.ExtensionContext) {
 		'languageServerExample',
 		'Language Server Example',
 		serverOptions,
-		clientOptions
+		clientOptions,
 	);
 
 	// Start the client. This will also launch the server
@@ -390,7 +383,7 @@ function createView(
 	context: vscode.ExtensionContext,
 	editor: any,
 	onDidExportAsSvg: (svgMarkup: any) => Promise<void>,
-	onDidExportAsPng: (arrayBuffer: any) => Promise<void>
+	onDidExportAsPng: (arrayBuffer: any) => Promise<void>,
 ): MapViewLoader {
 	return new MapViewLoader({
 		context,

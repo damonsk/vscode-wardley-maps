@@ -35,7 +35,7 @@ const createEmptyMap = () => ({
 });
 
 const App = () => {
-	let vscodeFeatureSwitches = {
+	const vscodeFeatureSwitches = {
 		...FeatureSwitches.featureSwitches,
 		showToggleFullscreen: false,
 		enableQuickAdd: false,
@@ -71,7 +71,10 @@ const App = () => {
 	const [highlightLine, setHighlightLine] = useState<number>(0);
 	const mapRef = useRef<HTMLDivElement>(null);
 	const componentName = useRef<HTMLInputElement>(null);
-	const [newComponentContext, setNewComponentContext] = useState<{ x: number; y: number } | null>(null);
+	const [newComponentContext, setNewComponentContext] = useState<{
+		x: number;
+		y: number;
+	} | null>(null);
 	const [showAdd, setShowAdd] = useState<boolean>(false);
 
 	useEffect(() => {
@@ -126,7 +129,11 @@ const App = () => {
 	}, [mapSize]);
 
 	function addNewComponent() {
-		if (!componentName.current || componentName.current.value.trim().length === 0) return;
+		if (
+			!componentName.current ||
+			componentName.current.value.trim().length === 0
+		)
+			return;
 		if (!newComponentContext) return;
 		setShowAdd(false);
 		mutateMapText(
@@ -148,7 +155,7 @@ const App = () => {
 	};
 
 	const getHeight = () => {
-		var winHeight = window.innerHeight;
+		const winHeight = window.innerHeight;
 		return winHeight - 140;
 	};
 	const getWidth = function () {

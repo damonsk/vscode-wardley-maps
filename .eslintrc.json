@@ -1,4 +1,6 @@
 {
+	"root": true,
+	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
 		"ecmaVersion": 2020,
 		"sourceType": "module",
@@ -14,11 +16,13 @@
 		"amd": true
 	},
 	"plugins": [
+		"@typescript-eslint",
 		"react",
 		"prettier"
 	],
 	"extends": [
 		"eslint:recommended",
+		"plugin:@typescript-eslint/recommended",
 		"plugin:react/recommended",
 		"prettier"
 	],
