@@ -8,9 +8,9 @@ export const useTheme = () => ({});
 export const ThemeProvider = ({ children }) => children;
 
 export default {
-    makeStyles,
-    withStyles,
-    createStyles,
-    useTheme,
-    ThemeProvider
+	makeStyles,
+	withStyles,
+	createStyles,
+	useTheme,
+	ThemeProvider,
 };

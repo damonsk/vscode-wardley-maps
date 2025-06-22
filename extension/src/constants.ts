@@ -32,5 +32,5 @@ Kettle->Power
 
 style wardley`,
 
-	ApiEndpoint: 'https://api.onlinewardleymaps.com/v1/maps/'
+	ApiEndpoint: 'https://api.onlinewardleymaps.com/v1/maps/',
 };
