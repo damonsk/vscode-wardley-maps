@@ -1,10 +1,37 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MapView, MapStyles, Defaults } from 'wmlandscape';
-import { Converter } from 'wmlandscape';
+import { UnifiedConverter, useUnifiedMapState } from 'wmlandscape';
 import { ModKeyPressedProvider } from 'wmlandscape';
 import { FeatureSwitchesProvider } from 'wmlandscape';
 import { FeatureSwitches } from 'wmlandscape';
 import domtoimage from 'dom-to-image-more';
+
+// Create empty map function as fallback since wmlandscape export may be broken
+const createEmptyMap = () => ({
+	title: '',
+	presentation: {
+		size: { width: 0, height: 0 },
+		style: 'plain',
+		annotations: [],
+		yAxis: {},
+	},
+	errors: [],
+	components: [],
+	anchors: [],
+	submaps: [],
+	markets: [],
+	ecosystems: [],
+	evolved: [],
+	pipelines: [],
+	evolution: [],
+	links: [],
+	annotations: [],
+	notes: [],
+	methods: [],
+	urls: [],
+	attitudes: [],
+	accelerators: [],
+});
 
 const App = () => {
 	let vscodeFeatureSwitches = {
@@ -14,27 +41,20 @@ const App = () => {
 		showMapToolbar: false,
 		showMiniMap: false,
 		allowMapZoomMouseWheel: false,
+		enableNewPipelines: true,
 	};
 
 	const [mapText, setMapText] = useState('');
-	const [mapTitle, setMapTitle] = useState('Untitled Map');
-	const [mapComponents, setMapComponents] = useState([]);
-	const [mapSubMaps, setMapSubMaps] = useState([]);
-	const [mapMarkets, setMarkets] = useState([]);
-	const [mapEcosystems, setEcosystems] = useState([]);
-	const [mapEvolved, setMapEvolved] = useState([]);
-	const [mapPipelines, setMapPipelines] = useState([]);
-	const [mapAnchors, setMapAnchors] = useState([]);
-	const [mapNotes, setMapNotes] = useState([]);
-	const [mapUrls, setMapUrls] = useState([]);
-	const [mapLinks, setMapLinks] = useState([]);
-	const [mapAttitudes, setMapAttitudes] = useState([]);
-	const [mapAnnotations, setMapAnnotations] = useState([]);
-	const [mapAccelerators, setMapAccelerators] = useState([]);
-	const [mapMethods, setMapMethods] = useState([]);
-	const [mapAnnotationsPresentation, setMapAnnotationsPresentation] = useState(
-		[],
-	);
+	const mapState = useUnifiedMapState();
+	const wardleyMap = mapState.state.map;
+	const setWardleyMap = mapState.actions.setMap;
+
+	// Initialize with empty map to prevent undefined errors
+	useEffect(() => {
+		if (!wardleyMap || !wardleyMap.components) {
+			setWardleyMap(createEmptyMap());
+		}
+	}, [wardleyMap, setWardleyMap]);
 
 	const [mapDimensions, setMapDimensions] = useState({
 		width: 500,
@@ -45,11 +65,7 @@ const App = () => {
 		height: 500,
 	});
 	const [mapSize, setMapSize] = useState({ width: 0, height: 0 });
-	const [mapEvolutionStates, setMapEvolutionStates] = useState(
-		Defaults.EvolutionStages,
-	);
 	const [mapStyle, setMapStyle] = useState('plain');
-	const [mapYAxis, setMapYAxis] = useState({});
 	const [mapStyleDefs, setMapStyleDefs] = useState(MapStyles.Plain);
 	const [highlightLine, setHighlightLine] = useState(0);
 	const mapRef = useRef(null);
@@ -132,7 +148,8 @@ const App = () => {
 		return winHeight - 140;
 	};
 	const getWidth = function () {
-		return document.getElementById('map').clientWidth - 70;
+		const mapElement = document.getElementById('map');
+		return mapElement ? mapElement.clientWidth - 70 : 500;
 	};
 
 	function debounce(fn, ms) {
@@ -147,8 +164,8 @@ const App = () => {
 	}
 
 	const launchUrl = (urlId) => {
-		if (mapUrls.find((u) => u.name === urlId)) {
-			const urlToLaunch = mapUrls.find((u) => u.name === urlId).url;
+		if (wardleyMap?.urls?.find((u) => u.name === urlId)) {
+			const urlToLaunch = wardleyMap.urls.find((u) => u.name === urlId).url;
 			window.open(urlToLaunch);
 		}
 	};
@@ -252,36 +269,39 @@ const App = () => {
 
 	useEffect(() => {
 		try {
-			var r = new Converter(vscodeFeatureSwitches).parse(mapText);
-			setMapTitle(r.title);
-			setMapAnnotations(r.annotations);
-			setMapAnchors(r.anchors);
-			setMapNotes(r.notes);
-			setMapComponents(r.elements);
-			setMapSubMaps(r.submaps);
-			setMarkets(r.markets);
-			setEcosystems(r.ecosystems);
-			setMapEvolved(r.evolved);
-			setMapPipelines(r.pipelines);
-			setMapLinks(r.links);
-			setMapUrls(r.urls);
-			setMapMethods(r.methods);
-			setMapAttitudes(r.attitudes);
-			setMapSize(r.presentation.size);
-			setMapStyle(r.presentation.style);
-			setMapAccelerators(r.accelerators);
-			setMapYAxis(r.presentation.yAxis);
-			setMapAnnotationsPresentation(r.presentation.annotations);
-			setMapEvolutionStates({
-				genesis: { l1: r.evolution[0].line1, l2: r.evolution[0].line2 },
-				custom: { l1: r.evolution[1].line1, l2: r.evolution[1].line2 },
-				product: { l1: r.evolution[2].line1, l2: r.evolution[2].line2 },
-				commodity: { l1: r.evolution[3].line1, l2: r.evolution[3].line2 },
-			});
+			if (!mapText.trim()) {
+				// If mapText is empty, use empty map
+				setWardleyMap(createEmptyMap());
+				setMapSize({ width: 0, height: 0 });
+				setMapStyle('plain');
+				return;
+			}
+
+			const converter = new UnifiedConverter(vscodeFeatureSwitches);
+			const parsedMap = converter.parse(mapText);
+
+			// Ensure parsedMap is valid before setting
+			if (parsedMap && parsedMap.components) {
+				setWardleyMap(parsedMap);
+				setMapSize(parsedMap.presentation?.size || { width: 0, height: 0 });
+				setMapStyle(parsedMap.presentation?.style || 'plain');
+			} else {
+				console.warn('Parsed map is invalid, using empty map');
+				setWardleyMap(createEmptyMap());
+				setMapSize({ width: 0, height: 0 });
+				setMapStyle('plain');
+			}
 		} catch (err) {
-			console.log(`Invalid markup on line ${1 + err.line}, could not render.`);
+			console.log(
+				`Invalid markup on line ${1 + (err.line || 0)}, could not render.`,
+				err,
+			);
+			// On error, fallback to empty map
+			setWardleyMap(createEmptyMap());
+			setMapSize({ width: 0, height: 0 });
+			setMapStyle('plain');
 		}
-	}, [mapText]);
+	}, [mapText, setWardleyMap]);
 
 	useEffect(() => {
 		window.postMessage({ command: 'highlightLine', val: highlightLine });
@@ -310,27 +330,16 @@ const App = () => {
 				<FeatureSwitchesProvider value={vscodeFeatureSwitches}>
 					<ModKeyPressedProvider>
 						<MapView
-							mapTitle={mapTitle}
-							mapComponents={mapComponents}
-							mapMarkets={mapMarkets}
-							mapEcosystems={mapEcosystems}
-							mapSubMaps={mapSubMaps}
-							mapEvolved={mapEvolved}
-							mapPipelines={mapPipelines}
-							mapAnchors={mapAnchors}
-							mapLinks={mapLinks}
-							mapAttitudes={mapAttitudes}
-							mapAccelerators={mapAccelerators}
+							wardleyMap={
+								wardleyMap && wardleyMap.components
+									? wardleyMap
+									: createEmptyMap()
+							}
 							launchUrl={launchUrl}
-							mapNotes={mapNotes}
-							mapAnnotations={mapAnnotations}
-							mapAnnotationsPresentation={mapAnnotationsPresentation}
-							mapMethods={mapMethods}
 							mapStyleDefs={mapStyleDefs}
-							mapYAxis={mapYAxis}
 							mapDimensions={mapDimensions}
 							mapCanvasDimensions={mapCanvasDimensions}
-							mapEvolutionStates={mapEvolutionStates}
+							mapEvolutionStates={Defaults.EvolutionStages}
 							mapRef={mapRef}
 							mapText={mapText}
 							mutateMapText={mutateMapText}
@@ -339,6 +348,13 @@ const App = () => {
 							evolutionOffsets={Defaults.EvoOffsets}
 							setHighlightLine={setHighlightLine}
 							setNewComponentContext={setNewComponentContext}
+							showLinkedEvolved={false}
+							mapAnnotationsPresentation={
+								wardleyMap?.presentation?.annotations || {
+									visibility: 0.5,
+									maturity: 0.5,
+								}
+							}
 						/>
 					</ModKeyPressedProvider>
 				</FeatureSwitchesProvider>
