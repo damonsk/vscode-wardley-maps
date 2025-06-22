@@ -198,7 +198,7 @@
 		"@emotion/react": "^11.14.0",
 		"@emotion/styled": "^11.14.0",
 		"@mui/icons-material": "^7.1.2",
-		"@mui/material": "^6.4.12",
+		"@mui/material": "^7.1.2",
 		"@mui/styles": "^6.4.12",
 		"core-js": "^3.39.0",
 		"dom-to-image-more": "^3.4.4",
