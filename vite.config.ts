@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
 	plugins: [react()],
 	root: './src',
 	publicDir: '../public',
@@ -21,10 +21,12 @@ export default defineConfig({
 			output: {
 				entryFileNames: 'static/js/[name].[hash].js',
 				chunkFileNames: 'static/js/[name].[hash].js',
-				assetFileNames: 'static/[ext]/[name].[hash].[ext]'
+				assetFileNames: 'static/[ext]/[name].[hash].[ext]',
+				sourcemapExcludeSources: false
 			}
 		},
-		sourcemap: true,
+		sourcemap: mode === 'development' ? 'inline' : true,
+		minify: mode === 'development' ? false : 'esbuild',
 		target: 'es2020'
 	},
 	css: {
@@ -42,7 +44,8 @@ export default defineConfig({
 	server: {
 		port: 3000,
 		open: false,
-		cors: true
+		cors: true,
+		sourcemapIgnoreList: false
 	},
 	optimizeDeps: {
 		include: [
@@ -54,4 +57,4 @@ export default defineConfig({
 			'styled-components'
 		]
 	}
-})
+}))

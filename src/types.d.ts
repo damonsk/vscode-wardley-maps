@@ -1,31 +1,5 @@
-declare module 'wmlandscape' {
-	export interface MapView {
-		// Define types based on the wmlandscape library
-		[key: string]: any;
-	}
-
-	export interface MapStyles {
-		[key: string]: any;
-	}
-
-	export interface Defaults {
-		[key: string]: any;
-	}
-
-	export interface UnifiedConverter {
-		[key: string]: any;
-	}
-
-	export function useUnifiedMapState(): any;
-
-	export function ModKeyPressedProvider({ children }: { children: React.ReactNode }): JSX.Element;
-
-	export function FeatureSwitchesProvider({ children }: { children: React.ReactNode }): JSX.Element;
-
-	export interface FeatureSwitches {
-		[key: string]: any;
-	}
-}
+// wmlandscape@2.441.0+ now ships with its own TypeScript definitions
+// in dist/index.d.ts, so we no longer need local type declarations
 
 declare module 'dom-to-image-more' {
 	export function toPng(node: HTMLElement, options?: any): Promise<string>;
