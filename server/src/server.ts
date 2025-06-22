@@ -133,50 +133,105 @@ documents.onDidChangeContent(change => {
 });
 
 async function validateTextDocument(textDocument: TextDocument): Promise<void> {
-	// In this simple example we get the settings for every validate run.
 	let settings = await getDocumentSettings(textDocument.uri);
-
-	// The validator creates diagnostics for all uppercase words length 2 and more
 	let text = textDocument.getText();
-	let pattern = /\b[A-Z]{2,}\b/g;
-	let m: RegExpExecArray | null;
-
-	let problems = 0;
 	let diagnostics: Diagnostic[] = [];
-	while ((m = pattern.exec(text)) && problems < settings.maxNumberOfProblems) {
-		problems++;
-		let diagnostic: Diagnostic = {
-			severity: DiagnosticSeverity.Warning,
-			range: {
-				start: textDocument.positionAt(m.index),
-				end: textDocument.positionAt(m.index + m[0].length)
-			},
-			message: `${m[0]} is all uppercase.`,
-			source: 'ex'
-		};
-		if (hasDiagnosticRelatedInformationCapability) {
-			diagnostic.relatedInformation = [
-				{
-					location: {
-						uri: textDocument.uri,
-						range: Object.assign({}, diagnostic.range)
-					},
-					message: 'Spelling matters'
-				},
-				{
-					location: {
-						uri: textDocument.uri,
-						range: Object.assign({}, diagnostic.range)
-					},
-					message: 'Particularly for names'
+	let problems = 0;
+
+	// Check for legacy market/ecosystem syntax and suggest modern decorator syntax
+	const lines = text.split('\n');
+	lines.forEach((line, lineIndex) => {
+		const trimmedLine = line.trim();
+		
+		// Check for legacy market syntax
+		if (trimmedLine.match(/^market\s+\w+\s*\[/)) {
+			if (problems < settings.maxNumberOfProblems) {
+				problems++;
+				const marketMatch = trimmedLine.match(/^market\s+(\w+)\s*(\[.*\])/);
+				if (marketMatch) {
+					const componentName = marketMatch[1];
+					const coordinates = marketMatch[2];
+					
+					let diagnostic: Diagnostic = {
+						severity: DiagnosticSeverity.Information,
+						range: {
+							start: { line: lineIndex, character: 0 },
+							end: { line: lineIndex, character: line.length }
+						},
+						message: `Consider using modern syntax: component ${componentName} ${coordinates} (market)`,
+						source: 'wardley-maps'
+					};
+					diagnostics.push(diagnostic);
 				}
-			];
+			}
 		}
-		//diagnostics.push(diagnostic);
-	}
+		
+		// Check for legacy ecosystem syntax  
+		if (trimmedLine.match(/^ecosystem\s+\w+\s*\[/)) {
+			if (problems < settings.maxNumberOfProblems) {
+				problems++;
+				const ecosystemMatch = trimmedLine.match(/^ecosystem\s+(\w+)\s*(\[.*\])/);
+				if (ecosystemMatch) {
+					const componentName = ecosystemMatch[1];
+					const coordinates = ecosystemMatch[2];
+					
+					let diagnostic: Diagnostic = {
+						severity: DiagnosticSeverity.Information,
+						range: {
+							start: { line: lineIndex, character: 0 },
+							end: { line: lineIndex, character: line.length }
+						},
+						message: `Consider using modern syntax: component ${componentName} ${coordinates} (ecosystem)`,
+						source: 'wardley-maps'
+					};
+					diagnostics.push(diagnostic);
+				}
+			}
+		}
+
+		// Validate decorator syntax
+		if (trimmedLine.match(/^component\s+.*\(/)) {
+			const decoratorMatch = trimmedLine.match(/\(([^)]+)\)/);
+			if (decoratorMatch) {
+				const decorators = decoratorMatch[1].split(',').map(d => d.trim());
+				const validDecorators = ["build", "buy", "outsource", "market", "ecosystem", "inertia"];
+				
+				decorators.forEach(decorator => {
+					if (!validDecorators.includes(decorator)) {
+						if (problems < settings.maxNumberOfProblems) {
+							problems++;
+							let diagnostic: Diagnostic = {
+								severity: DiagnosticSeverity.Warning,
+								range: {
+									start: { line: lineIndex, character: line.indexOf(decorator) },
+									end: { line: lineIndex, character: line.indexOf(decorator) + decorator.length }
+								},
+								message: `Unknown decorator '${decorator}'. Valid decorators: ${validDecorators.join(', ')}`,
+								source: 'wardley-maps'
+							};
+							diagnostics.push(diagnostic);
+						}
+					}
+				});
+			}
+		}
+	});
 
 	// Send the computed diagnostics to VSCode.
 	connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
+}
+
+// Helper function to provide decorator descriptions
+function getDecoratorDetail(decorator: string): string {
+	const details: { [key: string]: string } = {
+		"build": "Component is built in-house",
+		"buy": "Component is purchased/acquired", 
+		"outsource": "Component is outsourced to third party",
+		"market": "Component represents a market",
+		"ecosystem": "Component represents an ecosystem",
+		"inertia": "Component has resistance to change"
+	};
+	return details[decorator] || "";
 }
 
 connection.onDidChangeWatchedFiles(_change => {
@@ -187,75 +242,104 @@ connection.onDidChangeWatchedFiles(_change => {
 // This handler provides the initial list of the completion items.
 connection.onCompletion(
 	(_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
-		
-		let d = documents.get(_textDocumentPosition.textDocument.uri);
-		if(d === undefined) return [];
 
-		const types :string[] = [
-			"component", 
-			"market", 
-			"submap", 
-			"pipeline", 
-			"pioneers", 
-			"settlers", 
+		let d = documents.get(_textDocumentPosition.textDocument.uri);
+		if (d === undefined) return [];
+
+		const types: string[] = [
+			"component",
+			"submap",
+			"pipeline",
+			"pioneers",
+			"settlers",
 			"townplanners",
-			"note", 
+			"note",
 			"annotation",
 			"annotations",
-			"x-axis", 
-			"y-axis", 
-			"style", 
-			"title", 
-			"anchor", 
+			"x-axis",
+			"y-axis",
+			"style",
+			"title",
+			"anchor",
+			// Legacy syntax - kept for backward compatibility
+			"market",
 			"ecosystem"
 		]
 
-		let rawVariables :string[] = [];
-		let vars :CompletionItem[] = types.map((t) => {
+		let rawVariables: string[] = [];
+		let vars: CompletionItem[] = types.map((t) => {
 			return {
 				label: t,
 				kind: CompletionItemKind.Function,
 			}
 		});
 
-		const lines :string[] = d.getText().split('\n');
+		const lines: string[] = d.getText().split('\n');
 		const currentLine = lines[_textDocumentPosition.position.line].trim()
 
 
-		const extractVariable = (s:string, line:string, toMutate:string[]) => {
-			if(line.trim().indexOf(`${s} `) == 0){
-				toMutate.push(line.split(`${s} `)[1].split('[')[0].trim());
+		const extractVariable = (s: string, line: string, toMutate: string[]) => {
+			if (line.trim().indexOf(`${s} `) == 0) {
+				// Handle both legacy syntax and new decorator syntax
+				let componentName = line.split(`${s} `)[1].split('[')[0].trim();
+				// Remove decorators if present (e.g., "Name (market, build)" -> "Name")
+				if (componentName.indexOf('(') > -1) {
+					componentName = componentName.split('(')[0].trim();
+				}
+				if (componentName && componentName.length > 0) {
+					toMutate.push(componentName);
+				}
 			}
 		}
 
 		const willResultInVariable = ["component", "submap", "market", "anchor", "ecosystem"];
 
-		lines.forEach( line => 
-			willResultInVariable.forEach( start => 
+		lines.forEach(line =>
+			willResultInVariable.forEach(start =>
 				extractVariable(start, line, rawVariables)
 			)
 		)
-		
-		const variableCompletes :CompletionItem[] = rawVariables.map( v => { return {label:v, kind:CompletionItemKind.Variable } });
+
+		const variableCompletes: CompletionItem[] = rawVariables.map(v => { return { label: v, kind: CompletionItemKind.Variable } });
 
 
-		if(_textDocumentPosition.position.character > 0){
+		if (_textDocumentPosition.position.character > 0) {
 			console.log('_textDocumentPosition.position.character > 0');
 			//exisitng content
-			if(currentLine.indexOf('->') > -1 && currentLine.indexOf('->') === _textDocumentPosition.position.character -2){
-				// show variables only.
+			if (currentLine.indexOf('->') > -1 && currentLine.indexOf('->') === _textDocumentPosition.position.character - 2) {
 				return variableCompletes;
 			}
 
-			if( (currentLine.indexOf('component ') > -1 || currentLine.indexOf('market ') > -1 || currentLine.indexOf('submap ') > -1 )
+			if ((currentLine.indexOf('component ') > -1 || currentLine.indexOf('market ') > -1 || currentLine.indexOf('submap ') > -1)
 				&& currentLine.indexOf('(') < _textDocumentPosition.position.character
-				&& currentLine.indexOf(')') >= _textDocumentPosition.position.character){
-				// decorators (build/)
-				return ["build", "buy", "outsource", "market", "ecosystem", "inertia"].map( v => { return {label:v, kind:CompletionItemKind.Keyword } })
+				&& currentLine.indexOf(')') >= _textDocumentPosition.position.character) {
+				
+				// Modern decorator completion - support combinations
+				const baseDecorators = ["build", "buy", "outsource", "market", "ecosystem", "inertia"];
+				
+				// Check what decorators are already present
+				const decoratorSection = currentLine.substring(
+					currentLine.indexOf('(') + 1, 
+					currentLine.indexOf(')', currentLine.indexOf('('))
+				);
+				const existingDecorators = decoratorSection.split(',').map(d => d.trim()).filter(d => d.length > 0);
+				
+				// Filter out already used decorators to avoid duplicates
+				const availableDecorators = baseDecorators.filter(decorator => 
+					!existingDecorators.includes(decorator)
+				);
+				
+				return availableDecorators.map(v => { 
+					return { 
+						label: v, 
+						kind: CompletionItemKind.Keyword,
+						detail: getDecoratorDetail(v)
+					} 
+				});
 			}
 
-			if(currentLine.trim().indexOf('style') === 0){
-				return ["plain", "colour", "wardley"].map( v => { return {label:v, kind:CompletionItemKind.Keyword } })
+			if (currentLine.trim().indexOf('style') === 0) {
+				return ["plain", "colour", "wardley"].map(v => { return { label: v, kind: CompletionItemKind.Keyword } })
 			}
 
 			return vars.concat(variableCompletes);
@@ -265,32 +349,20 @@ connection.onCompletion(
 			console.log('_textDocumentPosition.position.character > 0');
 		}
 
-		
 
-		
+
+
 		console.log('default return');
 		return vars.concat(variableCompletes);
 	}
 );
 
-// This handler resolves additional information for the item selected in
-// the completion list.
 connection.onCompletionResolve(
 	(item: CompletionItem): CompletionItem => {
-		// if (item.data === 1) {
-		// 	item.detail = 'TypeScript details';
-		// 	item.documentation = 'TypeScript documentation';
-		// } else if (item.data === 2) {
-		// 	item.detail = 'JavaScript details';
-		// 	item.documentation = 'JavaScript documentation';
-		// }
 		return item;
 	}
 );
 
-// Make the text document manager listen on the connection
-// for open, change and close text document events
 documents.listen(connection);
 
-// Listen on the connection
 connection.listen();
