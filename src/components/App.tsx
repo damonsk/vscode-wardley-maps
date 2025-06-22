@@ -21,11 +21,11 @@ import React, {
 	useCallback,
 	useMemo,
 } from 'react';
-import { 
-	MapView, 
-	MapStyles, 
-	Defaults, 
-	UnifiedConverter, 
+import {
+	MapView,
+	MapStyles,
+	Defaults,
+	UnifiedConverter,
 	useUnifiedMapState,
 	ModKeyPressedProvider,
 	FeatureSwitchesProvider,
@@ -259,7 +259,7 @@ const App = () => {
 
 	function exportToSvg() {
 		if (!mapRef.current) return;
-		
+
 		const svgMapText = mapRef.current
 			.getElementsByTagName('svg')[0]
 			.outerHTML.replace(/&nbsp;/g, ' ');
@@ -324,7 +324,7 @@ const App = () => {
 				return;
 			}
 
-			const converter = new UnifiedConverter();
+			const converter = new UnifiedConverter(vscodeFeatureSwitches);
 			const parsedMap = converter.parse(mapText);
 
 			// Ensure parsedMap is valid before setting
