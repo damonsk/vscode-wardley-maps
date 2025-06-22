@@ -10,3 +10,4 @@ vsc-extension-quickstart.md
 *.visx
 yarn.lock
 out/**
+.env

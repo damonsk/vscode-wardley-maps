@@ -1,12 +1,14 @@
 {
   "compilerOptions": {
     "module": "esnext",
-    "target": "es2019",
+    "target": "es2020",
     "lib": [
-      "ES2019"
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
     ],
     "outDir": "out",
-    "rootDir": "src",
+    "rootDir": ".",
     "sourceMap": true,
     "allowJs": true,
     "skipLibCheck": true,
@@ -23,10 +25,13 @@
   },
   "include": [
     "src",
+    "vite.config.ts"
   ],
   "exclude": [
     "node_modules",
-    ".vscode-test"
+    ".vscode-test",
+    "build",
+    "extension/out"
   ],
   "references": [
     {

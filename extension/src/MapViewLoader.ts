@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import * as fs from 'fs';
 
 interface Message {
     command: string;
@@ -136,23 +137,37 @@ class MapViewLoader {
 
     private getWebviewContent(): string {
         const csp = this._panel.webview.cspSource;
-        const p = path.join(this._extensionPath, 'build', 'asset-manifest.json');
-        const manifest = require(p);
-        const scripts = manifest.entrypoints;
-        const styles = manifest.files['main.css'];
 
-        const scriptsToInclude = scripts.map((p: string) => this.buildUri(p));
-        const stylesToInclude = this.buildUri(styles);
-        const nonce = this.getNonce();
-        let scriptText = `<link rel="stylesheet" nonce="${nonce}" href="${stylesToInclude}">\n`;
+        // Read the Vite-generated index.html to extract asset paths
+        const indexHtmlPath = path.join(this._extensionPath, 'build', 'index.html');
 
-        for (let index = 0; index < scriptsToInclude.length; index++) {
-            let element = scriptsToInclude[index];
+        let cssPath = 'static/css/index.css';
+        let jsPath = 'static/js/index.js';
 
-            if (element.toString().endsWith('.js')) {
-                scriptText += `<script nonce="${nonce}" src="${element}"></script>\n`;
+        try {
+            const indexHtml = fs.readFileSync(indexHtmlPath, 'utf8');
+
+            // Extract CSS and JS file paths from the HTML
+            const cssMatch = indexHtml.match(/href="([^"]*\.css)"/);
+            const jsMatch = indexHtml.match(/src="([^"]*\.js)"/);
+
+            if (cssMatch) {
+                cssPath = cssMatch[1].replace(/^\//, '');
             }
+            if (jsMatch) {
+                jsPath = jsMatch[1].replace(/^\//, '');
+            }
+        } catch (error) {
+            console.error('Error reading index.html:', error);
+            // Fallback to default paths if reading fails
         }
+
+        const stylesToInclude = this.buildUri(cssPath);
+        const scriptsToInclude = this.buildUri(jsPath);
+        const nonce = this.getNonce();
+
+        let scriptText = `<link rel="stylesheet" nonce="${nonce}" href="${stylesToInclude}">\n`;
+        scriptText += `<script type="module" nonce="${nonce}" src="${scriptsToInclude}"></script>\n`;
         return `<!DOCTYPE html>
         <html lang="en">
         <head>

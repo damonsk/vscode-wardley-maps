@@ -1,0 +1,6 @@
+title Simple Test Map
+component User [0.9, 0.2]
+component Service [0.7, 0.5]
+component Database [0.5, 0.8]
+User->Service
+Service->Database

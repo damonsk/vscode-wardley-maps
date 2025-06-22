@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import * as wmlandscape from 'wmlandscape';
 import * as path from 'path';
 import { workspace } from 'vscode';
 import {
@@ -11,6 +10,7 @@ import {
 import MapViewLoader from './MapViewLoader';
 import { OwmApiResponse } from './OwmApiResponse';
 import { MapView } from './MapView';
+import { Defaults } from './constants';
 
 let client: LanguageClient;
 
@@ -144,7 +144,7 @@ function activate(context: vscode.ExtensionContext) {
 				editor.edit((editBuilder) => {
 					editBuilder.insert(
 						new vscode.Position(0, 0),
-						wmlandscape.Defaults.ExampleMap
+						Defaults.ExampleMap
 					);
 				});
 
@@ -231,7 +231,7 @@ function activate(context: vscode.ExtensionContext) {
 
 					try {
 						const response = await fetch(
-							wmlandscape.Defaults.ApiEndpoint + 'save',
+							Defaults.ApiEndpoint + 'save',
 							{
 								method: 'POST',
 								headers: {
@@ -283,7 +283,7 @@ function activate(context: vscode.ExtensionContext) {
 
 					try {
 						const response = await fetch(
-							wmlandscape.Defaults.ApiEndpoint + 'save',
+							Defaults.ApiEndpoint + 'save',
 							{
 								method: 'POST',
 								headers: {

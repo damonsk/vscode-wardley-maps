@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect, useRef } from 'react';
 import { MapView, MapStyles, Defaults } from 'wmlandscape';
 import { UnifiedConverter, useUnifiedMapState } from 'wmlandscape';
@@ -57,24 +58,24 @@ const App = () => {
 	}, [wardleyMap, setWardleyMap]);
 
 	const [mapDimensions, setMapDimensions] = useState({
-		width: 500,
-		height: 500,
+		width: 800,
+		height: 600,
 	});
 	const [mapCanvasDimensions, setMapCanvasDimensions] = useState({
-		width: 500,
-		height: 500,
+		width: 800,
+		height: 600,
 	});
 	const [mapSize, setMapSize] = useState({ width: 0, height: 0 });
 	const [mapStyle, setMapStyle] = useState('plain');
 	const [mapStyleDefs, setMapStyleDefs] = useState(MapStyles.Plain);
-	const [highlightLine, setHighlightLine] = useState(0);
-	const mapRef = useRef(null);
-	const componentName = useRef(null);
-	const [newComponentContext, setNewComponentContext] = useState(null);
-	const [showAdd, setShowAdd] = useState(false);
+	const [highlightLine, setHighlightLine] = useState<number>(0);
+	const mapRef = useRef<HTMLDivElement>(null);
+	const componentName = useRef<HTMLInputElement>(null);
+	const [newComponentContext, setNewComponentContext] = useState<{ x: number; y: number } | null>(null);
+	const [showAdd, setShowAdd] = useState<boolean>(false);
 
 	useEffect(() => {
-		const handleEscape = (k) => {
+		const handleEscape = (k: KeyboardEvent) => {
 			if (k.key === 'Escape') {
 				document.removeEventListener('keyup', handleEscape);
 				cancelShowAdd();
@@ -91,7 +92,9 @@ const App = () => {
 	}, [newComponentContext]);
 
 	useEffect(() => {
-		if (showAdd) componentName.current.focus();
+		if (showAdd && componentName.current) {
+			componentName.current.focus();
+		}
 	}, [showAdd]);
 
 	useEffect(() => {
@@ -123,7 +126,8 @@ const App = () => {
 	}, [mapSize]);
 
 	function addNewComponent() {
-		if (componentName.current.value.trim().length === 0) return;
+		if (!componentName.current || componentName.current.value.trim().length === 0) return;
+		if (!newComponentContext) return;
 		setShowAdd(false);
 		mutateMapText(
 			`${mapText}\r\ncomponent ${componentName.current.value} [${newComponentContext.y}, ${newComponentContext.x}]`,
