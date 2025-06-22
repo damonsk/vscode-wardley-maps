@@ -1,0 +1,64 @@
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for all configuration options:
+# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+  # Main VS Code extension package
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    # Group MUI updates together since they should be updated in sync
+    groups:
+      mui:
+        patterns:
+          - "@mui/*"
+          - "@emotion/*"
+      vscode:
+        patterns:
+          - "@vscode/*"
+          - "vscode-*"
+      eslint:
+        patterns:
+          - "eslint*"
+          - "@typescript-eslint/*"
+      types:
+        patterns:
+          - "@types/*"
+    # Ignore major version updates for stable dependencies
+    ignore:
+      - dependency-name: "react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+    # Set reviewers for dependency PRs
+    reviewers:
+      - "damonsk"
+    # Limit the number of open pull requests
+    open-pull-requests-limit: 5
+
+  # Language server package
+  - package-ecosystem: "npm"
+    directory: "/server"
+    schedule:
+      interval: "weekly"
+    groups:
+      vscode-language-server:
+        patterns:
+          - "vscode-language*"
+    reviewers:
+      - "damonsk"
+    open-pull-requests-limit: 3
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    reviewers:
+      - "damonsk"
+    open-pull-requests-limit: 2

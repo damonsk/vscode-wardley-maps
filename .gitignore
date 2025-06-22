@@ -2,8 +2,7 @@ node_modules
 .vscode-test/
 *.vsix
 build/
-yarn.lock
-package-lock.json
-*/out/**
+*/out
 *.tsbuildinfo
 .DS_Store
+out/

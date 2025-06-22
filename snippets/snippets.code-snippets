@@ -11,8 +11,13 @@
     },
     "Market Component": {
         "prefix": "market",
-        "body": "market ${1:name} [${2:0.9}, ${3:0.1}]",
-        "description": "A market component in the value chain"
+        "body": "component ${1:name} [${2:0.9}, ${3:0.1}] (market)",
+        "description": "A market component in the value chain using modern decorator syntax"
+    },
+    "Ecosystem Component": {
+        "prefix": "ecosystem",
+        "body": "component ${1:name} [${2:0.9}, ${3:0.1}] (ecosystem)",
+        "description": "An ecosystem component in the value chain using modern decorator syntax"
     },
     "Submap Component": {
         "prefix": "submap",
@@ -57,6 +62,31 @@
         "body": "${1|build,buy,outsource|} ${2:component}",
         "description": "Set components method - build/buy/outsource"
     },
+    "Component with Method": {
+        "prefix": "component-method",
+        "body": "component ${1:name} [${2:0.9}, ${3:0.1}] (${4|build,buy,outsource|})",
+        "description": "Component with method decorator using modern syntax"
+    },
+    "Market Component with Method": {
+        "prefix": "market-method",
+        "body": "component ${1:name} [${2:0.9}, ${3:0.1}] (market, ${4|build,buy,outsource|})",
+        "description": "Market component with method decorator combination"
+    },
+    "Ecosystem Component with Method": {
+        "prefix": "ecosystem-method",
+        "body": "component ${1:name} [${2:0.9}, ${3:0.1}] (ecosystem, ${4|build,buy,outsource|})",
+        "description": "Ecosystem component with method decorator combination"
+    },
+    "Market Component (Legacy)": {
+        "prefix": "market-legacy",
+        "body": "market ${1:name} [${2:0.9}, ${3:0.1}]",
+        "description": "⚠️ Legacy market syntax - consider using 'component Name (market)' instead"
+    },
+    "Ecosystem Component (Legacy)": {
+        "prefix": "ecosystem-legacy",
+        "body": "ecosystem ${1:name} [${2:0.9}, ${3:0.1}]",
+        "description": "⚠️ Legacy ecosystem syntax - consider using 'component Name (ecosystem)' instead"
+    },
     "Evolution": {
         "prefix": "evolve",
         "body": "evolve ${1:foo} ${2:0.9}",
@@ -88,7 +118,7 @@
     "Annotation": {
         "prefix": "annotation-single",
         "body": [
-            "annotation ${1:1} [${2:0.9}, ${3:0.1}] ${4:summary}",
+            "annotation ${1:1} [${2:0.9}, ${3:0.1}] ${4:summary}"
         ],
         "description": "Creates an numbered annotation reference on the map with a summary"
     },
@@ -115,13 +145,13 @@
     "PipelineV2Block": {
         "prefix": "pipeline-block",
         "body": [
-            "component ${1:Power} [${2:0.21}, ${3:0.67}]"
-            "pipeline ${1:Power} [${4:0.1},${5:0.1}]"
-            "{"
-                "\tcomponent ${6:Wind} [${7:0.72}]"
-                "\tcomponent ${8:Batteries} [${9:0.58}] "
-                "\tevolve ${8:Batteries} ${10:0.65}"
-                "\tcomponent ${11:Nuclear} [${12:0.77}]"
+            "component ${1:Power} [${2:0.21}, ${3:0.67}]",
+            "pipeline ${1:Power} [${4:0.1},${5:0.1}]",
+            "{",
+            "\tcomponent ${6:Wind} [${7:0.72}]",
+            "\tcomponent ${8:Batteries} [${9:0.58}] ",
+            "\tevolve ${8:Batteries} ${10:0.65}",
+            "\tcomponent ${11:Nuclear} [${12:0.77}]",
             "}"            
         ],
         "description": "Creates a component and matching pipeline with several sub-components"
