@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import * as fs from 'fs';
 import { workspace } from 'vscode';
 import {
 	LanguageClient,
@@ -32,7 +33,6 @@ function activate(context: vscode.ExtensionContext) {
 		const saveUri = await vscode.window.showSaveDialog(options);
 
 		if (saveUri) {
-			const fs = require('fs');
 			const path = saveUri.fsPath;
 
 			const buffer =
@@ -46,8 +46,8 @@ function activate(context: vscode.ExtensionContext) {
 		}
 	};
 
-	const onDidExportAsSvg = async (svgMarkup: Buffer) => {
-		await saveFile('svg', svgMarkup);
+	const onDidExportAsSvg = async (svgMarkup: string) => {
+		await saveFile('svg', Buffer.from(svgMarkup));
 	};
 
 	const onDidExportAsPng = async (arrayBuffer: ArrayBuffer) => {
@@ -62,7 +62,7 @@ function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		config_errors,
 		vscode.workspace.onDidChangeTextDocument(
-			(x: { document: { fileName: string; getText: () => any } }) => {
+			(x: { document: { fileName: string; getText: () => string } }) => {
 				const { document } = x;
 				const { fileName } = document;
 				try {
@@ -217,8 +217,7 @@ function activate(context: vscode.ExtensionContext) {
 				if (editor) {
 					const { fileName } = editor.document;
 					console.log(
-						'[extension.ts] vscode-wardley-maps.export-to-owm -- ' +
-							editor.document.fileName,
+						'[extension.ts] vscode-wardley-maps.export-to-owm -- ' + fileName,
 					);
 					const mapText =
 						editor.document.getText() +
@@ -268,7 +267,7 @@ function activate(context: vscode.ExtensionContext) {
 					const { fileName } = editor.document;
 					console.log(
 						'[extension.ts] vscode-wardley-maps.generate-clone-url -- ' +
-							editor.document.fileName,
+							fileName,
 					);
 					const mapText =
 						editor.document.getText() +
@@ -381,9 +380,9 @@ exports.activate = activate;
 
 function createView(
 	context: vscode.ExtensionContext,
-	editor: any,
-	onDidExportAsSvg: (svgMarkup: any) => Promise<void>,
-	onDidExportAsPng: (arrayBuffer: any) => Promise<void>,
+	editor: vscode.TextEditor,
+	onDidExportAsSvg: (_svgMarkup: string) => Promise<void>,
+	onDidExportAsPng: (_arrayBuffer: ArrayBuffer) => Promise<void>,
 ): MapViewLoader {
 	return new MapViewLoader({
 		context,

@@ -36,7 +36,10 @@
 		],
 		"linebreak-style": "off",
 		"react/prop-types": "off",
-		"no-unused-vars": ["error", { "argsIgnorePattern": "^_" }]
+		"no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+		"@typescript-eslint/ban-ts-comment": ["error", {
+			"ts-nocheck": "allow-with-description"
+		}]
 	},
 	"settings": {
 		"react": {

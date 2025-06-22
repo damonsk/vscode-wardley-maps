@@ -11,16 +11,16 @@ interface MapViewLoaderOptions {
 	context: vscode.ExtensionContext;
 	editor: vscode.TextEditor;
 	filename: string;
-	onDidExportAsSvg: (svgMarkup: string) => Promise<void>;
-	onDidExportAsPng: (arrayBuffer: ArrayBuffer) => Promise<void>;
+	onDidExportAsSvg: (_svgMarkup: string) => Promise<void>;
+	onDidExportAsPng: (_arrayBuffer: ArrayBuffer) => Promise<void>;
 }
 
 class MapViewLoader {
 	private _extensionPath: string;
 	private _editor: vscode.TextEditor;
 	private _filename: string;
-	private _onDidExportAsSvg: (svgMarkup: string) => void;
-	private _onDidExportAsPng: (arrayBuffer: ArrayBuffer) => void;
+	private _onDidExportAsSvg: (_svgMarkup: string) => void;
+	private _onDidExportAsPng: (_arrayBuffer: ArrayBuffer) => void;
 	private _panel: vscode.WebviewPanel;
 
 	constructor(options: MapViewLoaderOptions) {
@@ -68,12 +68,12 @@ class MapViewLoader {
 						);
 						this.postMessage(textEditor.document.getText());
 						break;
-					case 'updateText':
-						var firstLine = textEditor.document.lineAt(0);
-						var lastLine = textEditor.document.lineAt(
+					case 'updateText': {
+						const firstLine = textEditor.document.lineAt(0);
+						const lastLine = textEditor.document.lineAt(
 							textEditor.document.lineCount - 1,
 						);
-						var textRange = new vscode.Range(
+						const textRange = new vscode.Range(
 							0,
 							firstLine.range.start.character,
 							textEditor.document.lineCount - 1,
@@ -93,6 +93,7 @@ class MapViewLoader {
 								});
 							});
 						return;
+					}
 				}
 			},
 			undefined,

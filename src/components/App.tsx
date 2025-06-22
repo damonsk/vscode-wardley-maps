@@ -1,4 +1,5 @@
-// @ts-nocheck
+// @ts-nocheck - Complex legacy component with many type issues that would require significant refactoring
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 import React, { useState, useEffect, useRef } from 'react';
 import { MapView, MapStyles, Defaults } from 'wmlandscape';
 import { UnifiedConverter, useUnifiedMapState } from 'wmlandscape';
@@ -165,11 +166,11 @@ const App = () => {
 
 	function debounce(fn, ms) {
 		let timer;
-		return () => {
+		return (...args) => {
 			clearTimeout(timer);
 			timer = setTimeout(() => {
 				timer = null;
-				fn.apply(this, arguments);
+				fn.apply(this, args);
 			}, ms);
 		};
 	}

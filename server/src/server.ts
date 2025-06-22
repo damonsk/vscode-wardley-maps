@@ -1,5 +1,3 @@
-import { unwatchFile } from 'fs';
-import { versions } from 'process';
 import {
 	createConnection,
 	TextDocuments,
@@ -26,7 +24,6 @@ const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 
 let hasConfigurationCapability: boolean = false;
 let hasWorkspaceFolderCapability: boolean = false;
-let hasDiagnosticRelatedInformationCapability: boolean = false;
 
 connection.onInitialize((params: InitializeParams) => {
 	const capabilities = params.capabilities;
@@ -38,11 +35,6 @@ connection.onInitialize((params: InitializeParams) => {
 	);
 	hasWorkspaceFolderCapability = !!(
 		capabilities.workspace && !!capabilities.workspace.workspaceFolders
-	);
-	hasDiagnosticRelatedInformationCapability = !!(
-		capabilities.textDocument &&
-		capabilities.textDocument.publishDiagnostics &&
-		capabilities.textDocument.publishDiagnostics.relatedInformation
 	);
 
 	const result: InitializeResult = {
@@ -73,7 +65,7 @@ connection.onInitialized(() => {
 		);
 	}
 	if (hasWorkspaceFolderCapability) {
-		connection.workspace.onDidChangeWorkspaceFolders((_event) => {
+		connection.workspace.onDidChangeWorkspaceFolders(() => {
 			connection.console.log('Workspace folder change event received.');
 		});
 	}
@@ -250,7 +242,7 @@ function getDecoratorDetail(decorator: string): string {
 	return details[decorator] || '';
 }
 
-connection.onDidChangeWatchedFiles((_change) => {
+connection.onDidChangeWatchedFiles(() => {
 	// Monitored files have change in VSCode
 	connection.console.log('We received an file change event');
 });
