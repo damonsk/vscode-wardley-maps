@@ -7,6 +7,15 @@
     "source.fixAll.eslint": "explicit",
     "source.fixAll": "explicit"
   },
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/out": true,
+    "**/.vscode-test": true,
+    "**/.git": true,
+    "**/.DS_Store": true,
+  },
   "eslint.lintTask.enable": true,
   "eslint.run": "onSave",
   "eslint.workingDirectories": [

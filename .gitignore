@@ -6,6 +6,4 @@ build/
 *.tsbuildinfo
 .DS_Store
 out/
-IMPROVEMENT_PROGRESS.md
-CODE_HEALTH_REPORT.md
-WMLANDSCAPE_TYPING.md
+copilot_reports
