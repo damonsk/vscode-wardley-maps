@@ -13,6 +13,7 @@ interface MapViewLoaderOptions {
 	filename: string;
 	onDidExportAsSvg: (_svgMarkup: string) => Promise<void>;
 	onDidExportAsPng: (_arrayBuffer: ArrayBuffer) => Promise<void>;
+	onDidDispose?: () => void;
 }
 
 class MapViewLoader {
@@ -42,6 +43,9 @@ class MapViewLoader {
 		);
 
 		this._panel.webview.html = this.getWebviewContent();
+		this._panel.onDidDispose(() => {
+			options.onDidDispose?.();
+		});
 		// Handle messages from the webview
 		this._panel.webview.onDidReceiveMessage(
 			(message: Message) => {

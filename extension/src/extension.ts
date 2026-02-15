@@ -19,6 +19,9 @@ function activate(context: vscode.ExtensionContext) {
 	const getMapView = (name: string) => {
 		return mapViews.find((instance) => instance.name == name)?.loader;
 	};
+	const removeMapView = (name: string) => {
+		mapViews = mapViews.filter((item) => item.name !== name);
+	};
 	const saveFile = async (
 		extension: string,
 		data: Buffer,
@@ -86,9 +89,7 @@ function activate(context: vscode.ExtensionContext) {
 			if (mv !== undefined) {
 				console.log('[extension.ts] -- [[onDidCloseTextDocument]]', fileName);
 				mv.dispose();
-				mapViews = mapViews.filter((item) => {
-					return item.name != fileName;
-				});
+				removeMapView(fileName);
 			}
 		}),
 	);
@@ -103,7 +104,27 @@ function activate(context: vscode.ExtensionContext) {
 
 					const mv = getMapView(fileName);
 					if (mv !== undefined) {
-						mv.reveal(vscode.ViewColumn.Beside);
+						try {
+							mv.reveal(vscode.ViewColumn.Beside);
+							mv.setActiveEditor(editor);
+						} catch (error) {
+							console.log(
+								'[extension.ts] stale map view, recreating --',
+								fileName,
+								error,
+							);
+							removeMapView(fileName);
+							mapViews.push({
+								name: fileName,
+								loader: createView(
+									context,
+									editor,
+									onDidExportAsSvg,
+									onDidExportAsPng,
+									() => removeMapView(fileName),
+								),
+							});
+						}
 					} else {
 						console.log(
 							'[extension.ts] vscode-wardley-maps.display-map -- ' + fileName,
@@ -116,6 +137,7 @@ function activate(context: vscode.ExtensionContext) {
 								editor,
 								onDidExportAsSvg,
 								onDidExportAsPng,
+								() => removeMapView(fileName),
 							),
 						});
 						const mv = getMapView(fileName);
@@ -149,6 +171,7 @@ function activate(context: vscode.ExtensionContext) {
 						editor,
 						onDidExportAsSvg,
 						onDidExportAsPng,
+						() => removeMapView(fileName),
 					),
 				});
 				const mv = getMapView(fileName);
@@ -383,6 +406,7 @@ function createView(
 	editor: vscode.TextEditor,
 	onDidExportAsSvg: (_svgMarkup: string) => Promise<void>,
 	onDidExportAsPng: (_arrayBuffer: ArrayBuffer) => Promise<void>,
+	onDidDispose?: () => void,
 ): MapViewLoader {
 	return new MapViewLoader({
 		context,
@@ -390,6 +414,7 @@ function createView(
 		filename: editor.document.fileName,
 		onDidExportAsSvg,
 		onDidExportAsPng,
+		onDidDispose,
 	});
 }
 
