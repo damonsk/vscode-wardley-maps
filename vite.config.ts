@@ -8,9 +8,14 @@ export default defineConfig(({ mode }) => ({
 	root: './src',
 	publicDir: '../public',
 	resolve: {
+		dedupe: ['react', 'react-dom'],
 		alias: {
 			'next/router': path.resolve(__dirname, 'src/shims/next-router.js'),
 			'@mui/styles': path.resolve(__dirname, 'src/shims/mui-styles.js'),
+			react: path.resolve(__dirname, 'node_modules/react'),
+			'react-dom': path.resolve(__dirname, 'node_modules/react-dom'),
+			'react/jsx-runtime': path.resolve(__dirname, 'node_modules/react/jsx-runtime.js'),
+			'react/jsx-dev-runtime': path.resolve(__dirname, 'node_modules/react/jsx-dev-runtime.js'),
 		}
 	},
 	build: {

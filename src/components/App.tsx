@@ -27,11 +27,9 @@ import {
 	Defaults,
 	UnifiedConverter,
 	useUnifiedMapState,
-	ModKeyPressedProvider,
 	FeatureSwitchesProvider,
-	UnifiedWardleyMap,
 	createEmptyMap,
-	useFeatureSwitches
+	useFeatureSwitches,
 } from 'wmlandscape';
 import domtoimage from 'dom-to-image-more';
 
@@ -47,6 +45,9 @@ interface WardleyMapUrl {
 }
 
 const App = () => {
+	const CANVAS_GUTTER_X = 78;
+	const CANVAS_GUTTER_Y = 30;
+
 	const defaultFeatureSwitches = useFeatureSwitches();
 	const vscodeFeatureSwitches = useMemo(
 		() => ({
@@ -93,6 +94,9 @@ const App = () => {
 	const [newComponentContext, setNewComponentContext] =
 		useState<NewComponentContext | null>(null);
 	const [showAdd, setShowAdd] = useState<boolean>(false);
+	const ignoreLegacyDoubleClickAdd = useCallback(() => {
+		// VS Code webview: disable legacy double-click "quick add" flow.
+	}, []);
 
 	const cancelShowAdd = useCallback(() => {
 		setShowAdd(false);
@@ -135,23 +139,31 @@ const App = () => {
 	}, [showAdd]);
 
 	useEffect(() => {
+		const nextWidth = getWidth();
+		const nextHeight = getHeight();
 		setMapDimensions({
-			width: mapSize.width > 0 ? mapSize.width : 500,
-			height: mapSize.height > 0 ? mapSize.height : 500,
+			width: Math.max(mapSize.width || 0, nextWidth),
+			height: Math.max(mapSize.height || 0, nextHeight),
 		});
 		setMapCanvasDimensions({
-			width: mapSize.width > 0 ? mapSize.width * 0.92 : 500,
-			height: mapSize.height > 0 ? mapSize.height : 500,
+			width: nextWidth,
+			height: nextHeight,
 		});
 	}, [mapSize]);
 
 	useEffect(() => {
 		const debouncedHandleResize = debounce(() => {
+			const nextWidth = getWidth();
+			const nextHeight = getHeight();
 			const dimensions = {
-				width: mapSize.width > 0 ? mapSize.width : 100 + getWidth(),
-				height: mapSize.height > 0 ? mapSize.height : getHeight(),
+				width: Math.max(mapSize.width || 0, nextWidth),
+				height: Math.max(mapSize.height || 0, nextHeight),
 			};
 			setMapDimensions(dimensions);
+			setMapCanvasDimensions({
+				width: nextWidth,
+				height: nextHeight,
+			});
 		}, 1);
 
 		window.addEventListener('resize', debouncedHandleResize);
@@ -185,12 +197,13 @@ const App = () => {
 	};
 
 	const getHeight = () => {
-		const winHeight = window.innerHeight;
-		return winHeight - 140;
+		const winHeight = window.innerHeight || document.documentElement.clientHeight;
+		return Math.max(320, winHeight - CANVAS_GUTTER_Y);
 	};
 	const getWidth = function () {
-		const mapElement = document.getElementById('map');
-		return mapElement ? mapElement.clientWidth - 70 : 500;
+		const winWidth = window.innerWidth || document.documentElement.clientWidth;
+		// Leave room for permanently snapped toolbar + right gutter
+		return Math.max(480, winWidth - CANVAS_GUTTER_X);
 	};
 
 	const launchUrl = (urlId: string) => {
@@ -376,35 +389,40 @@ const App = () => {
 		<React.Fragment>
 			<div>
 				<FeatureSwitchesProvider value={vscodeFeatureSwitches}>
-					<ModKeyPressedProvider>
-						<MapView
-							wardleyMap={
-								wardleyMap && wardleyMap.components
-									? wardleyMap
-									: createEmptyMap()
+					<MapView
+						wardleyMap={
+							wardleyMap && wardleyMap.components
+								? wardleyMap
+								: createEmptyMap()
+						}
+						mapOnlyView={false}
+						toolbarSnapped={true}
+						showWysiwygToolbar={true}
+						launchUrl={launchUrl}
+						mapStyleDefs={mapStyleDefs}
+						mapDimensions={mapDimensions}
+						mapCanvasDimensions={mapCanvasDimensions}
+						mapEvolutionStates={Defaults.EvolutionStages}
+						mapRef={mapRef}
+						mapText={mapText}
+						mutateMapText={mutateMapText}
+						setMetaText={() => console.log('set meta text not implemented')}
+						metaText={() => console.log('meta text not implemented')}
+						evolutionOffsets={Defaults.EvoOffsets}
+						setHighlightLine={setHighlightLine}
+						setNewComponentContext={
+							ignoreLegacyDoubleClickAdd as React.Dispatch<
+								React.SetStateAction<{ x: string; y: string } | null>
+							>
+						}
+						showLinkedEvolved={false}
+						mapAnnotationsPresentation={
+							wardleyMap?.presentation?.annotations || {
+								visibility: 0.5,
+								maturity: 0.5,
 							}
-							launchUrl={launchUrl}
-							mapStyleDefs={mapStyleDefs}
-							mapDimensions={mapDimensions}
-							mapCanvasDimensions={mapCanvasDimensions}
-							mapEvolutionStates={Defaults.EvolutionStages}
-							mapRef={mapRef}
-							mapText={mapText}
-							mutateMapText={mutateMapText}
-							setMetaText={() => console.log('set meta text not implemented')}
-							metaText={() => console.log('meta text not implemented')}
-							evolutionOffsets={Defaults.EvoOffsets}
-							setHighlightLine={setHighlightLine}
-							setNewComponentContext={setNewComponentContext}
-							showLinkedEvolved={false}
-							mapAnnotationsPresentation={
-								wardleyMap?.presentation?.annotations || {
-									visibility: 0.5,
-									maturity: 0.5,
-								}
-							}
-						/>
-					</ModKeyPressedProvider>
+						}
+					/>
 				</FeatureSwitchesProvider>
 
 				{showAdd ? (
